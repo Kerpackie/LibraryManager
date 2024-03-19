@@ -1,4 +1,5 @@
 ﻿using LibraryManager.Core.Data;
+using LibraryManager.Core.Services.BookService;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -6,7 +7,13 @@ namespace LibraryManager.Core;
 
 public static class DependencyInjection
 {
-	public static IServiceCollection AddLibraryManagerCore(this IServiceCollection services, DbConnectionConfig dbConnectionConfig)
+	public static IServiceCollection AddLibraryManagerCore(this IServiceCollection services)
+	{
+		services.AddScoped<IBookService, BookService>();
+		return services;
+	}
+	
+	public static IServiceCollection AddLibraryManagerDatabase(this IServiceCollection services, DbConnectionConfig dbConnectionConfig)
 	{
 		if (dbConnectionConfig.ProviderName == "SQLite")
 		{

@@ -20,8 +20,9 @@ var dbConnection = new DbConnectionConfig
 builder.Services.AddControllers();
 
 builder.Services.AddSingleton(dbConnection);
+builder.Services.AddLibraryManagerDatabase(dbConnection);
+builder.Services.AddLibraryManagerCore();
 
-builder.Services.AddLibraryManagerCore(dbConnection);
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();

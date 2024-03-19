@@ -34,7 +34,8 @@ namespace LibraryManager
             
             var services = new ServiceCollection();
             services.AddLibraryManager();
-            services.AddLibraryManagerCore(dbConnection);
+            services.AddLibraryManagerDatabase(dbConnection);
+            services.AddLibraryManagerCore();
             
             var serviceProvider = services.BuildServiceProvider();
 

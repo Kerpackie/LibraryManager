@@ -13,7 +13,7 @@ namespace LibraryManager.Core.Data
 			_dbConnectionConfig = dbConnectionConfig;
 		}
 
-		public DbSet<Book> Books => Set<Book>();
+		public DbSet<Book?> Books => Set<Book>();
 
 		protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 		{
