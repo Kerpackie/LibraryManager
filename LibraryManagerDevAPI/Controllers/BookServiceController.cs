@@ -40,14 +40,13 @@ public class BookServiceController : ControllerBase
 			: Ok(book);
 	}
 	
-	// Create a book
-	[HttpPost]
-	[ProducesResponseType(typeof(Book), StatusCodes.Status201Created)]
-	public async Task<IActionResult> Create([FromBody] Book book)
+	[HttpGet()]
+	[ProducesResponseType(typeof(Book), StatusCodes.Status200OK)]
+	public async Task<IActionResult> GetAll()
 	{
-		await _bookService.CreateBookAsync(book);
+		var books = await _bookService.GetAllBooksAsync();
 
-		return CreatedAtAction(nameof(Get), new {id = book.Id}, book);
+		return Ok(books);
 	}
 	
 	[HttpGet("by-year/{year:int}")]
@@ -93,18 +92,28 @@ public class BookServiceController : ControllerBase
 		return Ok(await _bookService.GetBooksByNumberOfPagesAsync(pageCount));
 	}
 	
-	[HttpGet("by-page-count/{pageCount:int}")]
+	[HttpGet("by-greater-page-count/{pageCount:int}")]
 	[ProducesResponseType(typeof(List<Book>), StatusCodes.Status200OK)]
 	public async Task<IActionResult> GetAllByMoreThanPageCount([FromRoute] int pageCount)
 	{
 		return Ok(await _bookService.GetBooksWithMorePagesThanAsync(pageCount));
 	}
 	
-	[HttpGet("by-page-count/{pageCount:int}")]
+	[HttpGet("by-less-page-count/{pageCount:int}")]
 	[ProducesResponseType(typeof(List<Book>), StatusCodes.Status200OK)]
 	public async Task<IActionResult> GetAllByLessThanPageCount([FromRoute] int pageCount)
 	{
 		return Ok(await _bookService.GetBooksWithLessPagesThanAsync(pageCount));
+	}
+	
+	// Create a book
+	[HttpPost]
+	[ProducesResponseType(typeof(Book), StatusCodes.Status201Created)]
+	public async Task<IActionResult> Create([FromBody] Book book)
+	{
+		await _bookService.CreateBookAsync(book);
+
+		return CreatedAtAction(nameof(Get), new {id = book.Id}, book);
 	}
 	
 }
