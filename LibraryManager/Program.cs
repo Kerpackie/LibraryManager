@@ -1,7 +1,7 @@
-using LibraryManager.Services.FormService;
+using LibraryManager.Core;
+using LibraryManager.Services;
 using LibraryManager.Views;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 
 namespace LibraryManager
 {
@@ -16,22 +16,15 @@ namespace LibraryManager
             // To customize application configuration such as set high DPI settings or default font,
             // see https://aka.ms/applicationconfiguration.
             ApplicationConfiguration.Initialize();
-            var host = CreateHostBuilder().Build();
-            ServiceProvider = host.Services;
+            
+            var services = new ServiceCollection();
+            services.AddLibraryManager();
+            services.AddLibraryManagerCore();
+            
+            var serviceProvider = services.BuildServiceProvider();
 
-            Application.Run(ServiceProvider.GetRequiredService<MainForm>());
+            Application.Run(serviceProvider.GetRequiredService<MainForm>());
         }
-
-        public static IServiceProvider ServiceProvider { get; private set; }
-
-        private static IHostBuilder CreateHostBuilder()
-        {
-            return Host.CreateDefaultBuilder()
-                .ConfigureServices((context, services) =>
-                {
-                    services.AddSingleton<IFormService, FormService>();
-                    services.AddTransient<MainForm>();
-                });
-        }
+        
     }
 }
