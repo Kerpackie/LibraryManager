@@ -2,15 +2,24 @@
 using LibraryManager.Views;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace LibraryManager.Services;
-
-public static class DependencyInjection
+namespace LibraryManager.Services
 {
-	public static IServiceCollection AddLibraryManager(this IServiceCollection services)
+	/// <summary>
+	/// Provides methods for configuring dependency injection services for the LibraryManager application.
+	/// </summary>
+	public static class DependencyInjection
 	{
-		services.AddSingleton<IFormService, FormService.FormService>();
-		services.AddTransient<MainForm>();
-		
-		return services;
+		/// <summary>
+		/// Adds and configures services for the LibraryManager application.
+		/// </summary>
+		/// <param name="services">The <see cref="IServiceCollection"/> to add services to.</param>
+		/// <returns>The same service collection so that multiple calls can be chained.</returns>
+		public static IServiceCollection AddLibraryManager(this IServiceCollection services)
+		{
+			services.AddSingleton<IFormService, FormService.FormService>();
+			services.AddTransient<MainForm>();
+
+			return services;
+		}
 	}
 }
