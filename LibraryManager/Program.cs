@@ -1,6 +1,8 @@
 using LibraryManager.Core;
+using LibraryManager.Core.Data;
 using LibraryManager.Services;
 using LibraryManager.Views;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace LibraryManager
@@ -17,9 +19,22 @@ namespace LibraryManager
             // see https://aka.ms/applicationconfiguration.
             ApplicationConfiguration.Initialize();
             
+            // Build configuration
+            var configuration = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+                .Build();
+
+            // Get DbConnection from configuration
+            var dbConnection = new DbConnection
+            {
+                ConnectionString = configuration.GetSection("DbConnection:ConnectionString").Value ?? "Data Source=library.db",
+                ProviderName = configuration.GetSection("DbConnection:ProviderName").Value ?? "SQLite"
+            };
+            
             var services = new ServiceCollection();
             services.AddLibraryManager();
-            services.AddLibraryManagerCore();
+            services.AddLibraryManagerCore(dbConnection);
             
             var serviceProvider = services.BuildServiceProvider();
 
