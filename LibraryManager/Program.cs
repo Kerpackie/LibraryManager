@@ -26,7 +26,7 @@ namespace LibraryManager
                 .Build();
 
             // Get DbConnection from configuration
-            var dbConnection = new DbConnection
+            var dbConnection = new DbConnectionConfig
             {
                 ConnectionString = configuration.GetSection("DbConnection:ConnectionString").Value ?? "Data Source=library.db",
                 ProviderName = configuration.GetSection("DbConnection:ProviderName").Value ?? "SQLite"

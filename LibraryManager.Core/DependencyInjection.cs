@@ -6,20 +6,20 @@ namespace LibraryManager.Core;
 
 public static class DependencyInjection
 {
-	public static IServiceCollection AddLibraryManagerCore(this IServiceCollection services, DbConnection dbConnection)
+	public static IServiceCollection AddLibraryManagerCore(this IServiceCollection services, DbConnectionConfig dbConnectionConfig)
 	{
-		if (dbConnection.ProviderName == "SQLite")
+		if (dbConnectionConfig.ProviderName == "SQLite")
 		{
 			services.AddDbContext<LibraryContext>(options =>
 				options.UseSqlite(
-					dbConnection.ConnectionString,
+					dbConnectionConfig.ConnectionString,
 					b => b.MigrationsAssembly(typeof(LibraryContext).Assembly.FullName)));
 		}
 		else
 		{
 			services.AddDbContext<LibraryContext>(options =>
 				options.UseSqlServer(
-					dbConnection.ConnectionString,
+					dbConnectionConfig.ConnectionString,
 					b => b.MigrationsAssembly(typeof(LibraryContext).Assembly.FullName)));
 		}
 

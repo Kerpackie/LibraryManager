@@ -10,14 +10,17 @@ var configuration = new ConfigurationBuilder()
 	.Build();
 
 // Get DbConnection from configuration
-var dbConnection = new DbConnection
+var dbConnection = new DbConnectionConfig
 {
-	ConnectionString = configuration.GetSection("DbConnection:ConnectionString").Value,
-	ProviderName = configuration.GetSection("DbConnection:ProviderName").Value
+	ConnectionString = "Data Source=library.db",
+	ProviderName = "SQLite"
 };
 
 // Add services to the container.
 builder.Services.AddControllers();
+
+builder.Services.AddSingleton(dbConnection);
+
 builder.Services.AddLibraryManagerCore(dbConnection);
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -25,6 +28,13 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
+
+// DIRTY HACK DO NOT DO THIS IN PRODUCTION
+
+var scope = app.Services.CreateScope();
+var context = scope.ServiceProvider.GetRequiredService<LibraryContext>();
+context.Database.EnsureDeleted();
+context.Database.EnsureCreated();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
