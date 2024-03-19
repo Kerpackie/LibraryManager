@@ -364,3 +364,7 @@ FodyWeavers.xsd
 .idea/
 
 LibraryManagerDevAPI/library.db
+
+*.db-shm
+
+*.db-wal
