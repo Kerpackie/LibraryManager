@@ -18,7 +18,7 @@ namespace LibraryManagerDevAPI.Controllers
         {
             await Task.Delay(1);
             
-            // Create a book
+            /*// Create a book
             var book = new Book
             {
                 Id = 1,
@@ -42,10 +42,10 @@ namespace LibraryManagerDevAPI.Controllers
                 Publisher = "Houghton Mifflin",
                 Genre = "Fantasy",
                 NumberOfPages = 423
-            };
+            };*/
             
             // Add the books to a list
-            var books = new List<Book> { book, book2 };
+            var books = new List<Book> {  };
             
             return books;
             
@@ -59,14 +59,14 @@ namespace LibraryManagerDevAPI.Controllers
             
             var book = new Book
             {
-                Id = 1,
+                /*Id = 1,
                 Title = "The Hobbit",
                 Author = "J.R.R. Tolkien",
                 PublicationYear = 1937,
                 ISBN = "978-0-395-08254-1",
                 Publisher = "Houghton Mifflin",
                 Genre = "Fantasy",
-                NumberOfPages = 310
+                NumberOfPages = 310*/
             };
             
             return book;

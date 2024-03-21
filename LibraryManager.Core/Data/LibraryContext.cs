@@ -1,6 +1,7 @@
 ﻿using LibraryManager.Core.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Data.SQLite;
+using LibraryManager.Core.Data.EntityMapping;
 
 namespace LibraryManager.Core.Data
 {
@@ -38,6 +39,12 @@ namespace LibraryManager.Core.Data
 			}
 
 			base.OnConfiguring(optionsBuilder);
+		}
+		
+		protected override void OnModelCreating(ModelBuilder modelBuilder)
+		{
+			modelBuilder.ApplyConfiguration(new GenreMapping());
+			modelBuilder.ApplyConfiguration(new BookMapping());
 		}
 	}
 }

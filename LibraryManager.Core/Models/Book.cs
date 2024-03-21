@@ -10,7 +10,9 @@ namespace LibraryManager.Core.Models
 		public string Author { get; set; }
 		public int PublicationYear { get; set; }
 		public string Publisher { get; set; }
-		public string Genre { get; set; }
 		public int NumberOfPages { get; set; }
+		
+		public Genre Genre { get; set; }
+		public int MainGenreId { get; set; }
 	}
 }
