@@ -49,9 +49,9 @@ public class BookServiceController : ControllerBase
 		return Ok(books);
 	}
 	
-	[HttpGet("by-year/{year:int}")]
+	[HttpGet("by-year/{year}")]
 	[ProducesResponseType(typeof(List<Book>), StatusCodes.Status200OK)]
-	public async Task<IActionResult> GetAllByYear([FromRoute] int year)
+	public async Task<IActionResult> GetAllByYear([FromRoute] string year)
 	{
 		return Ok(await _bookService.GetBooksByPublicationYearAsync(year));
 	}

@@ -14,9 +14,10 @@ public class BookMapping : IEntityTypeConfiguration<Book>
             .HasMaxLength(128)
             .IsRequired();
         
-        builder.Property(book => book.PublicationYear)
+        /*builder.Property(book => book.PublicationYear)
             .HasColumnType("char(4)")
             .HasConversion(new DateTimeToChar4Converter());
+            */
         
         builder
             .HasOne(book => book.Genre)

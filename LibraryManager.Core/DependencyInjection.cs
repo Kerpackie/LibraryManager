@@ -15,6 +15,8 @@ public static class DependencyInjection
 	
 	public static IServiceCollection AddLibraryManagerDatabase(this IServiceCollection services, DbConnectionConfig dbConnectionConfig)
 	{
+		services.AddSingleton(dbConnectionConfig);
+		
 		if (dbConnectionConfig.ProviderName == "SQLite")
 		{
 			services.AddDbContext<LibraryContext>(options =>

@@ -33,12 +33,27 @@ namespace LibraryManager
             };
             
             var services = new ServiceCollection();
-            services.AddLibraryManager();
+            /*services.AddLibraryManager();
             services.AddLibraryManagerDatabase(dbConnection);
             services.AddLibraryManagerCore();
+            */
+            
+            //services.AddSingleton(dbConnection);
+            services.AddLibraryManagerDatabase(dbConnection);
+            services.AddLibraryManagerCore();
+            services.AddLibraryManager();
             
             var serviceProvider = services.BuildServiceProvider();
 
+            // DIRTY HACK DO NOT DO THIS IN PRODUCTION
+            using (var scope = serviceProvider.CreateScope())
+            {
+                var context = scope.ServiceProvider.GetRequiredService<LibraryContext>();
+                context.Database.EnsureDeleted();
+                context.Database.EnsureCreated();
+            }
+            
+            
             Application.Run(serviceProvider.GetRequiredService<MainForm>());
         }
         

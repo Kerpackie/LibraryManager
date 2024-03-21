@@ -12,7 +12,7 @@ namespace LibraryManager.Core.Services.BookService
 		Task<IEnumerable<Book?>> GetBooksByTitleAsync(string title);
 		Task<IEnumerable<Book?>> GetBooksByPublisherAsync(string publisher);
 		Task<IEnumerable<Book?>> GetBooksByGenreAsync(string genre);
-		Task<IEnumerable<Book?>> GetBooksByPublicationYearAsync(int publicationYear);
+		Task<IEnumerable<Book?>> GetBooksByPublicationYearAsync(string publicationYear);
 		Task<IEnumerable<Book?>> GetBooksByNumberOfPagesAsync(int numberOfPages);
 		Task<IEnumerable<Book?>> GetBooksWithMorePagesThanAsync(int numberOfPages);
 		Task<IEnumerable<Book?>> GetBooksWithLessPagesThanAsync(int numberOfPages);

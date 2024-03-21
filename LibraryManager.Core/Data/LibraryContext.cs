@@ -22,8 +22,11 @@ namespace LibraryManager.Core.Data
 			if (_dbConnectionConfig.ProviderName == "SQLite")
 			{
 				var connectionStringBuilder = new SQLiteConnectionStringBuilder(_dbConnectionConfig.ConnectionString);
-				var databaseFilePath = connectionStringBuilder.DataSource;
+				//var databaseFilePath = connectionStringBuilder.DataSource;
 
+				// Set databaseFilePath to currentWorkingDirectory/database.db
+				var databaseFilePath = $"{Directory.GetCurrentDirectory()}/{connectionStringBuilder.DataSource}";
+				
 				// Check if the directory of the database file exists, if not, create it
 				var databaseDirectory = Path.GetDirectoryName(databaseFilePath);
 				if (!string.IsNullOrEmpty(databaseDirectory) && !Directory.Exists(databaseDirectory))
@@ -43,7 +46,7 @@ namespace LibraryManager.Core.Data
 		
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{
-			modelBuilder.ApplyConfiguration(new GenreMapping());
+			//modelBuilder.ApplyConfiguration(new GenreMapping());
 			modelBuilder.ApplyConfiguration(new BookMapping());
 		}
 	}

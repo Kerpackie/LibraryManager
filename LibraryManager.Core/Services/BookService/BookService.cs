@@ -58,7 +58,7 @@ namespace LibraryManager.Core.Services.BookService
 			return await _context.Books.Where(b => b.Genre.Name == genre).ToListAsync();
 		}
 
-		public async Task<IEnumerable<Book?>> GetBooksByPublicationYearAsync(int publicationYear)
+		public async Task<IEnumerable<Book?>> GetBooksByPublicationYearAsync(string publicationYear)
 		{
 			return await _context.Books.Where(b => b.PublicationYear == publicationYear).ToListAsync();
 		}
