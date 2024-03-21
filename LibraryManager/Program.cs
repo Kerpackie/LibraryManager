@@ -1,7 +1,9 @@
-using LibraryManager.Services.FormService;
+using LibraryManager.Core;
+using LibraryManager.Core.Data;
+using LibraryManager.Services;
 using LibraryManager.Views;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 
 namespace LibraryManager
 {
@@ -16,22 +18,44 @@ namespace LibraryManager
             // To customize application configuration such as set high DPI settings or default font,
             // see https://aka.ms/applicationconfiguration.
             ApplicationConfiguration.Initialize();
-            var host = CreateHostBuilder().Build();
-            ServiceProvider = host.Services;
+            
+            // Build configuration
+            var configuration = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+                .Build();
 
-            Application.Run(ServiceProvider.GetRequiredService<MainForm>());
+            // Get DbConnection from configuration
+            var dbConnection = new DbConnectionConfig
+            {
+                ConnectionString = configuration.GetSection("DbConnection:ConnectionString").Value ?? "Data Source=library.db",
+                ProviderName = configuration.GetSection("DbConnection:ProviderName").Value ?? "SQLite"
+            };
+            
+            var services = new ServiceCollection();
+            /*services.AddLibraryManager();
+            services.AddLibraryManagerDatabase(dbConnection);
+            services.AddLibraryManagerCore();
+            */
+            
+            //services.AddSingleton(dbConnection);
+            services.AddLibraryManagerDatabase(dbConnection);
+            services.AddLibraryManagerCore();
+            services.AddLibraryManager();
+            
+            var serviceProvider = services.BuildServiceProvider();
+
+            // DIRTY HACK DO NOT DO THIS IN PRODUCTION
+            using (var scope = serviceProvider.CreateScope())
+            {
+                var context = scope.ServiceProvider.GetRequiredService<LibraryContext>();
+                context.Database.EnsureDeleted();
+                context.Database.EnsureCreated();
+            }
+            
+            
+            Application.Run(serviceProvider.GetRequiredService<MainForm>());
         }
-
-        public static IServiceProvider ServiceProvider { get; private set; }
-
-        private static IHostBuilder CreateHostBuilder()
-        {
-            return Host.CreateDefaultBuilder()
-                .ConfigureServices((context, services) =>
-                {
-                    services.AddSingleton<IFormService, FormService>();
-                    services.AddTransient<MainForm>();
-                });
-        }
+        
     }
 }
