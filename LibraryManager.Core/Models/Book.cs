@@ -9,7 +9,7 @@ namespace LibraryManager.Core.Models
 		public int Id { get; set; }
 		public string? ISBN { get; set; }
 		public string? Title { get; set; }
-		public string? Author { get; set; }
+		public Author? Author { get; set; }
 		public int PageCount { get; set; }
 		public int PagesRead { get; set; }
 		public bool Owned { get; set; }
@@ -34,7 +34,7 @@ namespace LibraryManager.Core.Models
 			{
 				ISBN = openLibraryResponse.Identifiers?.Isbn_13?[0] ?? openLibraryResponse.Identifiers?.Isbn_10?[0];
 				Title = openLibraryResponse.Title;
-				Author = openLibraryResponse.Authors?[0].Name;
+				Author = openLibraryResponse.Authors?[0];
 				PageCount = openLibraryResponse.Number_of_pages;
 				Publisher = openLibraryResponse.Publishers?[0];
 				Subjects = openLibraryResponse.Subjects;
@@ -44,7 +44,6 @@ namespace LibraryManager.Core.Models
 			{
 				ISBN = "";
 				Title = "BROKEN SHIT.";
-				Author = "";
 				PageCount = 0;
 				Publisher = new Publisher();
 				Subjects = new List<Subject>();
