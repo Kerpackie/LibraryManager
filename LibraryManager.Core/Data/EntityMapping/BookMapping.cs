@@ -19,10 +19,6 @@ public class BookMapping : IEntityTypeConfiguration<Book>
             .HasConversion(new DateTimeToChar4Converter());
             */
         
-        builder
-            .HasOne(book => book.Genre)
-            .WithMany(genre => genre.Books)
-            .HasPrincipalKey(genre => genre.Id)
-            .HasForeignKey(book => book.MainGenreId);
+        
     }
 }
