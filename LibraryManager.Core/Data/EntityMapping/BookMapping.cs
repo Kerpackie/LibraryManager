@@ -9,7 +9,13 @@ public class BookMapping : IEntityTypeConfiguration<Book>
 {
     public void Configure(EntityTypeBuilder<Book> builder)
     {
-        builder.Property(book => book.Title)
+        builder
+            .HasOne(b => b.Cover)
+            .WithMany()
+            .HasForeignKey(b => b.CoverId);
+        
+        builder
+            .Property(book => book.Title)
             .HasColumnType("varchar")
             .HasMaxLength(128)
             .IsRequired();
@@ -19,10 +25,6 @@ public class BookMapping : IEntityTypeConfiguration<Book>
             .HasConversion(new DateTimeToChar4Converter());
             */
         
-        builder
-            .HasOne(book => book.Genre)
-            .WithMany(genre => genre.Books)
-            .HasPrincipalKey(genre => genre.Id)
-            .HasForeignKey(book => book.MainGenreId);
+        
     }
 }

@@ -19,9 +19,9 @@ var dbConnection = new DbConnectionConfig
 // Add services to the container.
 builder.Services.AddControllers();
 
-builder.Services.AddSingleton(dbConnection);
 builder.Services.AddLibraryManagerDatabase(dbConnection);
 builder.Services.AddLibraryManagerCore();
+builder.Services.UseOpenLibraryApi();
 
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

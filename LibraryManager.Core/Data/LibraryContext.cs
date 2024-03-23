@@ -15,7 +15,11 @@ namespace LibraryManager.Core.Data
 		}
 
 		public DbSet<Book> Books => Set<Book>();
-		public DbSet<Genre> Genres => Set<Genre>();
+		public DbSet<Author> Authors => Set<Author>();
+		public DbSet<Publisher> Publishers => Set<Publisher>();
+		public DbSet<Subject> Subjects => Set<Subject>();
+		public DbSet<BookSubject> BookSubjects => Set<BookSubject>();
+		public DbSet<Cover> Covers => Set<Cover>();
 
 		protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 		{
@@ -46,8 +50,8 @@ namespace LibraryManager.Core.Data
 		
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{
-			//modelBuilder.ApplyConfiguration(new GenreMapping());
 			modelBuilder.ApplyConfiguration(new BookMapping());
+			modelBuilder.ApplyConfiguration(new BookSubjectMapping());
 		}
 	}
 }

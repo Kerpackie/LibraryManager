@@ -4,6 +4,7 @@ namespace LibraryManager.Core.Services.BookService
 {
 	public interface IBookService
 	{
+		Task<Book> GetBookFromApiAsync(string isbn);
 		Task<Book?> CreateBookAsync(Book? book);
 		Task<Book?> GetBookAsync(int id);
 		Task<Book?> GetBookByIsbnAsync(string isbn);

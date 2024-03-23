@@ -1,7 +1,9 @@
 ﻿using LibraryManager.Core.Data;
 using LibraryManager.Core.Services.BookService;
+using LibraryManager.Core.Services.OpenLibraryAPIService;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Refit;
 
 namespace LibraryManager.Core;
 
@@ -32,6 +34,13 @@ public static class DependencyInjection
 					b => b.MigrationsAssembly(typeof(LibraryContext).Assembly.FullName)));
 		}
 
+		return services;
+	}
+	
+	public static IServiceCollection UseOpenLibraryApi(this IServiceCollection services)
+	{
+		services.AddRefitClient<IOpenLibraryApiService>()
+			.ConfigureHttpClient(c => c.BaseAddress = new Uri("https://openlibrary.org"));
 		return services;
 	}
 }
