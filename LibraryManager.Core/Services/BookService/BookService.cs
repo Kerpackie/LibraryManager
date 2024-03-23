@@ -50,32 +50,32 @@ namespace LibraryManager.Core.Services.BookService
 
 		public async Task<IEnumerable<Book?>> GetBooksByPublisherAsync(string publisher)
 		{
-			return await _context.Books.Where(b => b.Publisher == publisher).ToListAsync();
+			throw new NotImplementedException();
 		}
 
 		public async Task<IEnumerable<Book?>> GetBooksByGenreAsync(string genre)
 		{
-			return await _context.Books.Where(b => b.Genre.Name == genre).ToListAsync();
+			throw new NotImplementedException();
 		}
 
 		public async Task<IEnumerable<Book?>> GetBooksByPublicationYearAsync(string publicationYear)
 		{
-			return await _context.Books.Where(b => b.PublicationYear == publicationYear).ToListAsync();
+			throw new NotImplementedException();
 		}
 
 		public async Task<IEnumerable<Book?>> GetBooksByNumberOfPagesAsync(int numberOfPages)
 		{
-			return await _context.Books.Where(b => b.NumberOfPages == numberOfPages).ToListAsync();
+			return await _context.Books.Where(b => b.PageCount == numberOfPages).ToListAsync();
 		}
 
 		public async Task<IEnumerable<Book?>> GetBooksWithMorePagesThanAsync(int numberOfPages)
 		{
-			return await _context.Books.Where(b => b.NumberOfPages > numberOfPages).ToListAsync();
+			return await _context.Books.Where(b => b.PageCount > numberOfPages).ToListAsync();
 		}
 
 		public async Task<IEnumerable<Book?>> GetBooksWithLessPagesThanAsync(int numberOfPages)
 		{
-			return await _context.Books.Where(b => b.NumberOfPages < numberOfPages).ToListAsync();
+			return await _context.Books.Where(b => b.PageCount < numberOfPages).ToListAsync();
 		}
 
 		public async Task<Book?> UpdateBookAsync(Book book)
@@ -88,10 +88,8 @@ namespace LibraryManager.Core.Services.BookService
 				dbBook.ISBN = book.ISBN;
 				dbBook.Title = book.Title;
 				dbBook.Author = book.Author;
-				dbBook.PublicationYear = book.PublicationYear;
 				dbBook.Publisher = book.Publisher;
-				dbBook.Genre = book.Genre;
-				dbBook.NumberOfPages = book.NumberOfPages;
+				dbBook.PageCount = book.PageCount;
 			}
 
 			await _context.SaveChangesAsync();
