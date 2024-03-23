@@ -15,6 +15,14 @@ public class BookServiceController : ControllerBase
 	{
 		_bookService = bookService;
 	}
+	
+	[HttpGet("api-demo/{isbn}")]
+	public async Task<IActionResult> GetAPIDemo(string isbn)
+	{
+		var book = await _bookService.GetBookFromApiAsync(isbn);
+
+		return Ok(book);
+	}
 
 	[HttpGet("{isbn}")]
 	[ProducesResponseType(typeof(Book), StatusCodes.Status200OK)]

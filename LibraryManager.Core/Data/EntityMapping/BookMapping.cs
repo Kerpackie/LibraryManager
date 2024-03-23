@@ -9,7 +9,13 @@ public class BookMapping : IEntityTypeConfiguration<Book>
 {
     public void Configure(EntityTypeBuilder<Book> builder)
     {
-        builder.Property(book => book.Title)
+        builder
+            .HasOne(b => b.Cover)
+            .WithMany()
+            .HasForeignKey(b => b.CoverId);
+        
+        builder
+            .Property(book => book.Title)
             .HasColumnType("varchar")
             .HasMaxLength(128)
             .IsRequired();
