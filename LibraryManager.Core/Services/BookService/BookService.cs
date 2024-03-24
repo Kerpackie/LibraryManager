@@ -69,6 +69,8 @@ public class BookService : IBookService
 
 	public async Task<ServiceResponse<Book>> InsertOrIgnoreBookAsync(Book book)
 	{
+		book.Trim();
+		
 		await using var transaction = await _context.Database.BeginTransactionAsync();
 		try
 		{

@@ -15,6 +15,8 @@ public class SubjectService : ISubjectService
 
 	public async Task<ServiceResponse<Subject>> InsertOrIgnoreSubjectAsync(Subject subject)
 	{
+		subject.Trim();
+		
 		var existingSubject = await _context.Subjects.FirstOrDefaultAsync(s => s.Name == subject.Name);
 		
 		if (existingSubject == null)
@@ -44,6 +46,8 @@ public class SubjectService : ISubjectService
 
 	public async Task<ServiceResponse<List<Subject>>> InsertOrIgnoreSubjectsAsync(List<Subject> subjects)
 	{
+		subjects.ForEach(s => s.Trim());
+		
 		var existingSubjects = new List<Subject>();
 
 		foreach (var subject in subjects)

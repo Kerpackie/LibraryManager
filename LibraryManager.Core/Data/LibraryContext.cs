@@ -14,7 +14,7 @@ public class LibraryContext : DbContext
 		_dbConnectionConfig = dbConnectionConfig;
 	}
 	
-	public virtual DbSet<Author> Authors { get; set; } = null!;
+	public virtual DbSet<Author?> Authors { get; set; } = null!;
 	public virtual DbSet<Book> Books { get; set; } = null!;
 	public virtual DbSet<Cover> Covers { get; set; } = null!;
 	public virtual DbSet<Publisher> Publishers { get; set; } = null!;
@@ -44,7 +44,7 @@ public class LibraryContext : DbContext
 		}
 		else if (_dbConnectionConfig.ProviderName == "Test")
 		{
-			optionsBuilder.UseSqlite(_dbConnectionConfig.ConnectionString);
+			optionsBuilder.UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString());
 		}
 		else
 		{

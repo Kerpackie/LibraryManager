@@ -15,6 +15,8 @@ public class PublisherService : IPublisherService
 
 	public async Task<ServiceResponse<Publisher>> InsertOrIgnorePublisherAsync(Publisher publisher)
 	{
+		publisher.Trim();
+		
 		var existingPublisher = await _context.Publishers.FirstOrDefaultAsync(p => p.Name == publisher.Name);
 
 		if (existingPublisher == null)

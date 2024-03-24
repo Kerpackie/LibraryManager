@@ -13,5 +13,12 @@
         public string? Large { get; set; }
 
         public virtual ICollection<Book> Books { get; set; }
+        
+        public void Trim()
+        {
+            Small = Small?.Trim();
+            Medium = Medium?.Trim();
+            Large = Large?.Trim();
+        }
     }
 }

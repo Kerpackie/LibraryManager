@@ -15,6 +15,8 @@ public class CoverService : ICoverService
 
 	public async Task<ServiceResponse<Cover>> InsertOrIgnoreCoverAsync(Cover cover)
 	{
+		cover.Trim();
+		
 		var existingCover = await _context.Covers.FirstOrDefaultAsync(c => c.Id == cover.Id);
 
 		if (existingCover == null)

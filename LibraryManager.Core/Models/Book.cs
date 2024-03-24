@@ -48,5 +48,10 @@ namespace LibraryManager.Core.Models
 
         }
        
+        public void Trim()
+        {
+            Title = Title.Trim();
+            Isbn = Isbn?.Trim();
+        }
     }
 }
