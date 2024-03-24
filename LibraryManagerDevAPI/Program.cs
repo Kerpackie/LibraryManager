@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using LibraryManager.Core;
 using LibraryManager.Core.Data;
 
@@ -13,12 +14,13 @@ var configuration = new ConfigurationBuilder()
 var dbConnection = new DbConnectionConfig
 {
 	ConnectionString = "Data Source=library.db",
+	//ConnectionString = @"Data Source=C:\\Users\\CryptoCodeRed\\DataGripProjects\\Appdev\\library.db",
 	ProviderName = "SQLite"
 };
 
 // Add services to the container.
-builder.Services.AddControllers();
-
+builder.Services.AddControllers().AddJsonOptions(x =>
+	x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve);
 builder.Services.AddLibraryManagerDatabase(dbConnection);
 builder.Services.AddLibraryManagerCore();
 builder.Services.UseOpenLibraryApi();

@@ -1,12 +1,17 @@
-using System.Text.Json.Serialization;
-
-namespace LibraryManager.Core.Models;
-
-public class Cover
+﻿namespace LibraryManager.Core.Models
 {
-	[JsonIgnore]
-	public int Id { get; set; }
-	public string? Small { get; set; }
-	public string? Medium { get; set; }
-	public string? Large { get; set; }
+    public class Cover
+    {
+        public Cover()
+        {
+            Books = new HashSet<Book>();
+        }
+
+        public long Id { get; set; }
+        public string? Small { get; set; }
+        public string? Medium { get; set; }
+        public string? Large { get; set; }
+
+        public virtual ICollection<Book> Books { get; set; }
+    }
 }

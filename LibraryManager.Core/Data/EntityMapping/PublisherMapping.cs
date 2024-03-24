@@ -9,13 +9,7 @@ public class PublisherMapping : IEntityTypeConfiguration<Publisher>
 	public void Configure(EntityTypeBuilder<Publisher> builder)
 	{
 		builder
-			.Property(p => p.Name)
-			.IsRequired()
-			.HasColumnType("varchar")
-			.HasMaxLength(450);
-
-		builder
-			.HasIndex(p => p.Name)
+			.HasIndex(e => e.Name, "IX_Publishers_Name")
 			.IsUnique();
 	}
 }

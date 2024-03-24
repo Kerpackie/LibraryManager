@@ -1,12 +1,15 @@
-using System.Text.Json.Serialization;
-
-namespace LibraryManager.Core.Models;
-
-public class Author
+﻿namespace LibraryManager.Core.Models
 {
-	[JsonIgnore]
-	public int Id { get; set; }
-	public string? Name { get; set; }
-	[JsonIgnore]
-	public ICollection<Book>? Books { get; set; }
+    public class Author
+    {
+        public Author()
+        {
+            Books = new HashSet<Book>();
+        }
+
+        public long Id { get; set; }
+        public string Name { get; set; } = null!;
+
+        public virtual ICollection<Book> Books { get; set; }
+    }
 }

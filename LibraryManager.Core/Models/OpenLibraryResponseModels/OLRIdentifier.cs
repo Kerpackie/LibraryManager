@@ -1,6 +1,7 @@
-namespace LibraryManager.Core.Models;
+namespace LibraryManager.Core.Models.OpenLibraryResponseModels;
 
-public class Identifier
+[Obsolete("Response from OpenLibrary API.")]
+public class OLRIdentifier
 {
 	public List<string>? Librarything { get; set; }
 	public List<string>? Wikidata { get; set; }

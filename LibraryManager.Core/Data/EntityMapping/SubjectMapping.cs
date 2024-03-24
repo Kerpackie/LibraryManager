@@ -9,13 +9,7 @@ public class SubjectMapping : IEntityTypeConfiguration<Subject>
 	public void Configure(EntityTypeBuilder<Subject> builder)
 	{
 		builder
-			.Property(s => s.Name)
-			.IsRequired()
-			.HasColumnType("varchar")
-			.HasMaxLength(450);
-
-		builder
-			.HasIndex(s => s.Name)
+			.HasIndex(e => e.Name, "IX_Subjects_Name")
 			.IsUnique();
 	}
 }

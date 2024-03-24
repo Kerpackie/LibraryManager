@@ -8,11 +8,8 @@ public class AuthorMapping : IEntityTypeConfiguration<Author>
 {
 	public void Configure(EntityTypeBuilder<Author> builder)
 	{
-		builder.Property(a => a.Name)
-			.IsRequired()
-			.HasMaxLength(128);
-		
-		builder.HasIndex(a => a.Name)
+		builder
+			.HasIndex(e => e.Name, "IX_Authors_Name")
 			.IsUnique();
 	}
 }

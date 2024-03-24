@@ -1,4 +1,5 @@
 ﻿using LibraryManager.Core.Models;
+using LibraryManager.Core.Models.OpenLibraryResponseModels;
 using LibraryManager.Core.Services.BookService;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,9 +10,9 @@ namespace LibraryManagerDevAPI.Controllers;
 [ApiController]
 public class BookServiceController : ControllerBase
 {
-	private readonly IBookService2 _bookService;
+	private readonly IBookService _bookService;
 
-	public BookServiceController(IBookService2 bookService)
+	public BookServiceController(IBookService bookService)
 	{
 		_bookService = bookService;
 	}
@@ -19,7 +20,7 @@ public class BookServiceController : ControllerBase
 	[HttpGet("api-demo/{isbn}")]
 	public async Task<IActionResult> GetAPIDemo(string isbn)
 	{
-		var book = await _bookService.GetBookFromApiAsync(isbn);
+		var book = await _bookService.LoadBookFromApiWithIsbnAsync(isbn);
 
 		return Ok(book);
 	}
@@ -27,9 +28,27 @@ public class BookServiceController : ControllerBase
 	[HttpPost("api-demo")]
 	public async Task<IActionResult> CreateAPIDemo([FromBody] Book book)
 	{
-		await _bookService.AddBookAsync(book);
+		await _bookService.InsertOrIgnoreBookAsync(book);
 
-		return CreatedAtAction(nameof(GetAPIDemo), new {isbn = book.ISBN}, book);
+		return CreatedAtAction(nameof(GetAPIDemo), new {isbn = book.Isbn}, book);
+	}
+	
+	[HttpGet("api-demo/books/{isbn}")]
+	public async Task<IActionResult> GetBookByIsbn(string isbn)
+	{
+		var book = await _bookService.GetBookByIsbnAsync(isbn);
+
+		return book.Success
+			? Ok(book)
+			: NotFound(book);
+	}
+	
+	[HttpGet("api-demo/books/")]
+	public async Task<IActionResult> GetAllBooks()
+	{
+		var books = await _bookService.GetBooksAsync();
+
+		return Ok(books);
 	}
 
 	/*[HttpGet("{isbn}")]

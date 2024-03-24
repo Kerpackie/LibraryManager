@@ -1,7 +1,7 @@
-﻿using LibraryManager.Core.Models;
+﻿using LibraryManager.Core.Models.OpenLibraryResponseModels;
 using Refit;
 
-namespace LibraryManager.Core.Services.OpenLibraryAPIService;
+namespace LibraryManager.Core.Services.BookAPIService;
 
 public interface IOpenLibraryApiService
 {

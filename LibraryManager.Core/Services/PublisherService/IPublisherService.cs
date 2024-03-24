@@ -4,9 +4,10 @@ namespace LibraryManager.Core.Services.PublisherService;
 
 public interface IPublisherService
 {
-	Task<Publisher> CreatePublisherAsync(Publisher publisher);
-	Task<Publisher?> GetPublisherAsync(int id);
-	Task<Publisher?> GetPublisherByNameAsync(string name);
-	Task<Publisher> UpdatePublisherAsync(Publisher publisher);
-	Task DeletePublisherAsync(int id);
+	Task<ServiceResponse<Publisher>> InsertOrIgnorePublisherAsync(Publisher publisher);
+	Task<ServiceResponse<Publisher?>> GetPublisherAsync(int id);
+	Task<ServiceResponse<Publisher?>> GetPublisherByNameAsync(string name);
+	Task<ServiceResponse<Publisher>> UpdatePublisherAsync(Publisher publisher);
+	Task<ServiceResponse<bool>> DeletePublisherAsync(int id);
+	Task<ServiceResponse<bool>> DeletePublisherAsync(string name);
 }

@@ -1,45 +1,128 @@
 ﻿using LibraryManager.Core.Data;
-using Microsoft.EntityFrameworkCore;
 using LibraryManager.Core.Models;
+using Microsoft.EntityFrameworkCore;
 
-namespace LibraryManager.Core.Services.CoverService
+namespace LibraryManager.Core.Services.CoverService;
+
+public class CoverService : ICoverService
 {
-	public class CoverService : ICoverService
+	private readonly LibraryContext _context;
+
+	public CoverService(LibraryContext context)
 	{
-		private readonly LibraryContext _context;
+		_context = context;
+	}
 
-		public CoverService(LibraryContext context)
-		{
-			_context = context;
-		}
+	public async Task<ServiceResponse<Cover>> InsertOrIgnoreCoverAsync(Cover cover)
+	{
+		var existingCover = await _context.Covers.FirstOrDefaultAsync(c => c.Id == cover.Id);
 
-		public async Task<Cover> CreateCoverAsync(Cover cover)
+		if (existingCover == null)
 		{
 			_context.Covers.Add(cover);
 			await _context.SaveChangesAsync();
-			return cover;
-		}
 
-		public async Task<Cover?> GetCoverAsync(int id)
-		{
-			return await _context.Covers.FindAsync(id);
-		}
-
-		public async Task<Cover> UpdateCoverAsync(Cover cover)
-		{
-			_context.Entry(cover).State = EntityState.Modified;
-			await _context.SaveChangesAsync();
-			return cover;
-		}
-
-		public async Task DeleteCoverAsync(int id)
-		{
-			var cover = await _context.Covers.FindAsync(id);
-			if (cover != null)
+			var responseSuccess = new ServiceResponse<Cover>
 			{
-				_context.Covers.Remove(cover);
-				await _context.SaveChangesAsync();
-			}
+				Data = cover,
+				Message = "Cover added",
+				Success = true
+			};
+
+			return responseSuccess;
 		}
+		
+		var responseFail = new ServiceResponse<Cover>
+		{
+			Data = existingCover,
+			Message = "Cover already exists",
+			Success = false
+		};
+
+		return responseFail;
+	}
+
+	public async Task<ServiceResponse<Cover?>> GetCoverAsync(int id)
+	{
+		var cover = await _context.Covers.FirstOrDefaultAsync(c => c.Id == id);
+
+		if (cover == null)
+		{
+			var responseFail = new ServiceResponse<Cover?>
+			{
+				Data = null,
+				Message = "Cover not found",
+				Success = false
+			};
+			
+			return responseFail;
+		}
+		
+		var responseSuccess = new ServiceResponse<Cover?>
+		{
+			Data = cover,
+			Message = "Cover found",
+			Success = true
+		};
+
+		return responseSuccess;
+	}
+
+	public async Task<ServiceResponse<Cover?>> UpdateCoverAsync(Cover cover)
+	{
+		var existingCover = await _context.Covers.FirstOrDefaultAsync(c => c.Id == cover.Id);
+
+		if (existingCover == null)
+		{
+			var responseFail = new ServiceResponse<Cover?>
+			{
+				Data = null,
+				Message = "Cover not found",
+				Success = false
+			};
+			
+			return responseFail;
+		}
+
+		_context.Covers.Update(cover);
+		await _context.SaveChangesAsync();
+
+		var responseSuccess = new ServiceResponse<Cover?>
+		{
+			Data = cover,
+			Message = "Cover updated",
+			Success = true
+		};
+
+		return responseSuccess;
+	}
+
+	public async Task<ServiceResponse<Cover>> DeleteCoverAsync(int id)
+	{
+		var cover = await _context.Covers.FirstOrDefaultAsync(c => c.Id == id);
+
+		if (cover == null)
+		{
+			var responseFail = new ServiceResponse<Cover>
+			{
+				Data = null,
+				Message = "Cover not found",
+				Success = false
+			};
+			
+			return responseFail;
+		}
+
+		_context.Covers.Remove(cover);
+		await _context.SaveChangesAsync();
+
+		var responseSuccess = new ServiceResponse<Cover>
+		{
+			Data = cover,
+			Message = "Cover deleted",
+			Success = true
+		};
+
+		return responseSuccess;
 	}
 }

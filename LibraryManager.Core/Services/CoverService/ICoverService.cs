@@ -4,8 +4,8 @@ namespace LibraryManager.Core.Services.CoverService;
 
 public interface ICoverService
 {
-	Task<Cover> CreateCoverAsync(Cover cover);
-	Task<Cover?> GetCoverAsync(int id);
-	Task<Cover> UpdateCoverAsync(Cover cover);
-	Task DeleteCoverAsync(int id);
+	Task<ServiceResponse<Cover>> InsertOrIgnoreCoverAsync(Cover cover);
+	Task<ServiceResponse<Cover?>> GetCoverAsync(int id);
+	Task<ServiceResponse<Cover?>> UpdateCoverAsync(Cover cover);
+	Task<ServiceResponse<Cover>> DeleteCoverAsync(int id);
 }

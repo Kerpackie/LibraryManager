@@ -1,8 +1,8 @@
 ﻿using LibraryManager.Core.Data;
 using LibraryManager.Core.Services.AuthorService;
+using LibraryManager.Core.Services.BookAPIService;
 using LibraryManager.Core.Services.BookService;
 using LibraryManager.Core.Services.CoverService;
-using LibraryManager.Core.Services.OpenLibraryAPIService;
 using LibraryManager.Core.Services.PublisherService;
 using LibraryManager.Core.Services.SubjectService;
 using Microsoft.EntityFrameworkCore;
@@ -15,11 +15,11 @@ public static class DependencyInjection
 {
 	public static IServiceCollection AddLibraryManagerCore(this IServiceCollection services)
 	{
-		services.AddTransient<IBookService2, BookService>();
-		services.AddTransient<IAuthorService, AuthorService>();
-		services.AddTransient<ICoverService, CoverService>();
-		services.AddTransient<IPublisherService, PublisherService>();
-		services.AddTransient<ISubjectService, SubjectService>();
+		services.AddScoped<IBookService, BookService>();
+		services.AddScoped<IAuthorService, AuthorService>();
+		services.AddScoped<ICoverService, CoverService>();
+		services.AddScoped<IPublisherService, PublisherService>();
+		services.AddScoped<ISubjectService, SubjectService>();
 		
 		return services;
 	}
@@ -50,6 +50,11 @@ public static class DependencyInjection
 	{
 		services.AddRefitClient<IOpenLibraryApiService>()
 			.ConfigureHttpClient(c => c.BaseAddress = new Uri("https://openlibrary.org"));
+
+		// Declare IBookApiService down here to allow the user to change the implementation of the service
+		// To use a different API service if they like, simulating a plugin system.
+		services.AddScoped<IBookApiService, OpenLibraryBookApiService>();
+		
 		return services;
 	}
 }

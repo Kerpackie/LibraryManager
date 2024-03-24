@@ -1,464 +1,429 @@
 ﻿using LibraryManager.Core.Data;
 using LibraryManager.Core.Models;
+using LibraryManager.Core.Models.OpenLibraryResponseModels;
 using LibraryManager.Core.Services.AuthorService;
+using LibraryManager.Core.Services.BookAPIService;
 using LibraryManager.Core.Services.CoverService;
-using LibraryManager.Core.Services.OpenLibraryAPIService;
 using LibraryManager.Core.Services.PublisherService;
 using LibraryManager.Core.Services.SubjectService;
-using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 
 namespace LibraryManager.Core.Services.BookService;
 
-public class BookService : IBookService, IBookService2
+public class BookService : IBookService
 {
 	private readonly LibraryContext _context;
-	private readonly IOpenLibraryApiService _openLibraryApiService;
+	private readonly IBookApiService _bookApiService;
 	private readonly ICoverService _coverService;
 	private readonly IPublisherService _publisherService;
 	private readonly ISubjectService _subjectService;
 	private readonly IAuthorService _authorService;
 
-	public BookService(
-		LibraryContext context, IOpenLibraryApiService openLibraryApiService, 
-		IAuthorService authorService, ISubjectService subjectService, 
-		IPublisherService publisherService, ICoverService coverService)
+	public BookService(ICoverService coverService, IBookApiService bookApiService, 
+		LibraryContext context, IPublisherService publisherService, ISubjectService subjectService, 
+		IAuthorService authorService)
 	{
-		_context = context;
-		_openLibraryApiService = openLibraryApiService;
-		_authorService = authorService;
-		_subjectService = subjectService;
-		_publisherService = publisherService;
 		_coverService = coverService;
+		_bookApiService = bookApiService;
+		_context = context;
+		_publisherService = publisherService;
+		_subjectService = subjectService;
+		_authorService = authorService;
 	}
 
-	public async Task<Book> GetBookFromApiAsync(string isbn)
+	public async Task<ServiceResponse<Book>> LoadBookFromApiWithIsbnAsync(string isbn)
 	{
-		// Get the response from the API
-		var response = await _openLibraryApiService.GetBookByIsbn(isbn);
-
-		if (response != null && response.ContainsKey($"ISBN:{isbn}"))
+		var data = await _bookApiService.GetBookFromApiAsync<OpenLibraryResponse>(isbn);
+		if (!data.Success)
 		{
-			
-			var book = new Book(response[$"ISBN:{isbn}"]);
-			await AddBookAsync(book);
-			
-			return book;
-		}
-		else
-		{
-			Console.WriteLine("Book not found in the API.");
-			return null;
-		}
-	}
-	
-	public async Task<Book> AddBookAsync2(Book book)
-	{
-		// Check if a book with the same ISBN already exists
-		var existingBook = await _context.Books.FindAsync(book.ISBN);
-
-		if (existingBook != null)
-		{
-			// A book with the same ISBN already exists, handle accordingly
-			// For example, you might want to throw an exception or return a specific result
-			throw new Exception("A book with the same ISBN already exists.");
-		}
-
-		// No book with the same ISBN exists, proceed with adding the new book
-		_context.Books.Add(book);
-		await _context.SaveChangesAsync();
-		return book;
-
-
-	}
-	
-	public async Task<ServiceResponse<Book>> AddBookAsync(Book book)
-	{
-		try
-		{
-			_context.Books.Add(book);
-			
-			await HandleAuthorAsync(book);
-			await HandlePublisherAsync(book);
-			await HandleSubjectsAsync(book);
-			await HandleCoverAsync(book);
-
-			
-			await _context.SaveChangesAsync();
-
-			return new ServiceResponse<Book>
-			{
-				Data = book,
-				Success = true,
-				Message = "Book added successfully."
-			};
-		}
-		catch (DbUpdateException ex) when ((ex.InnerException as SqliteException)?.SqliteErrorCode == SQLitePCL.raw.SQLITE_CONSTRAINT)
-		{
-
-			Console.WriteLine(ex.InnerException?.Message);
 			return new ServiceResponse<Book>
 			{
 				Data = null,
-				Success = false,
-				Message = "A book with the same ISBN already exists."
+				Message = data.Message,
+				Success = false
 			};
 		}
-		catch (DbUpdateConcurrencyException ex)
+
+		if (data.Data == null)
 		{
-			Console.WriteLine(ex.Message);
-			
 			return new ServiceResponse<Book>
 			{
 				Data = null,
-				Success = false,
-				Message = "A concurrency error occurred while trying to add the book."
+				Message = "Book not found",
+				Success = false
 			};
 		}
-		catch (InvalidOperationException ex)
+		
+		var openLibraryResponse = data.Data;
+		var book = new Book(openLibraryResponse);
+		await InsertOrIgnoreBookAsync(book);
+		
+		return new ServiceResponse<Book>
 		{
-			Console.WriteLine(ex.Message);
-			
-			return new ServiceResponse<Book>
-			{
-				Data = null,
-				Success = false,
-				Message = "An invalid operation was attempted while trying to add the book."
-			};
-		}
-		catch (Exception e)
-		{
-			Console.WriteLine(e.Message);
-			return new ServiceResponse<Book>
-			{
-				Data = null,
-				Success = false,
-				Message = $"An unexpected error occurred: {e.Message}"
-			};
-		}
-	}
-	
-	public async Task<ServiceResponse<Book>> UpdateBookAsync(Book book)
-	{
-	    var existingBook = await _context.Books
-		    .Include(b => b.Author)
-		    .Include(b => b.Publisher)
-		    .Include(b => b.Cover)
-		    .Include(b => b.BookSubjects)!
-	            .ThenInclude(bs => bs.Subject)
-	        .FirstOrDefaultAsync(b => b.ISBN == book.ISBN);
-
-	    if (existingBook == null)
-	    {
-	        return new ServiceResponse<Book>
-	        {
-	            Data = null,
-	            Success = false,
-	            Message = "Book not found."
-	        };
-	    }
-
-	    await UpdateAuthorAsync(book, existingBook);
-	    await UpdatePublisherAsync(book, existingBook);
-	    await UpdateSubjectsAsync(book, existingBook);
-	    await UpdateCoverAsync(book, existingBook);
-
-	    await _context.SaveChangesAsync();
-
-	    return new ServiceResponse<Book>
-	    {
-	        Data = existingBook,
-	        Success = true,
-	        Message = "Book updated successfully."
-	    };
-	}
-
-	private async Task UpdateAuthorAsync(Book book, Book existingBook)
-	{
-	    if (book.Author != null)
-	    {
-	        var existingAuthor = await _authorService.GetAuthorByNameAsync(book.Author.Name);
-	        if (existingAuthor != null)
-	        {
-	            existingBook.Author = existingAuthor;
-	        }
-	        else
-	        {
-	            var newAuthor = await _authorService.CreateAuthorAsync(book.Author);
-	            existingBook.Author = newAuthor;
-	        }
-	    }
-	}
-
-	private async Task UpdatePublisherAsync(Book book, Book existingBook)
-	{
-	    if (book.Publisher != null)
-	    {
-	        var existingPublisher = await _publisherService.GetPublisherByNameAsync(book.Publisher.Name);
-	        if (existingPublisher != null)
-	        {
-	            existingBook.Publisher = existingPublisher;
-	        }
-	        else
-	        {
-	            var newPublisher = await _publisherService.CreatePublisherAsync(book.Publisher);
-	            existingBook.Publisher = newPublisher;
-	        }
-	    }
-	}
-
-	private async Task UpdateSubjectsAsync(Book book, Book existingBook)
-	{
-		if (book.Subjects != null)
-		{
-			existingBook.BookSubjects.Clear();
-
-			foreach (var subject in book.Subjects)
-			{
-				var existingSubject = await _subjectService.GetSubjectByNameAsync(subject.Name);
-				if (existingSubject != null)
-				{
-					var bookSubject = new BookSubject
-					{
-						Book = existingBook,
-						Subject = existingSubject
-					};
-					existingBook.BookSubjects.Add(bookSubject);
-					_context.BookSubjects.Add(bookSubject); // Add this line
-				}
-				else
-				{
-					var newSubject = await _subjectService.CreateSubjectAsync(subject);
-					var bookSubject = new BookSubject
-					{
-						Book = existingBook,
-						Subject = newSubject
-					};
-					existingBook.BookSubjects.Add(bookSubject);
-					_context.BookSubjects.Add(bookSubject); // Add this line
-				}
-			}
-		}
-	}
-
-	private async Task UpdateCoverAsync(Book book, Book existingBook)
-	{
-	    if (book.Cover != null)
-	    {
-	        var existingCover = await _coverService.GetCoverAsync(book.CoverId);
-	        if (existingCover != null)
-	        {
-	            existingBook.Cover = existingCover;
-	        }
-	        else
-	        {
-	            var newCover = await _coverService.CreateCoverAsync(book.Cover);
-	            existingBook.Cover = newCover;
-	        }
-	    }
-	}
-
-	private async Task HandleAuthorAsync(Book book)
-	{
-		// Check if the book has an author
-	    if (book.Author != null)
-	    {
-		    
-		    // Check if the author already exists in the database
-	        var existingAuthor = await _authorService.GetAuthorByNameAsync(book.Author.Name);
-	        if (existingAuthor != null)
-	        {
-		        
-		        // Set the state of the existing author to Unchanged
-	            _context.Entry(existingAuthor).State = EntityState.Unchanged;
-	            book.Author = existingAuthor;
-	            
-	            // Add the book to the author's list of books
-	            existingAuthor.Books ??= new List<Book>();
-	            existingAuthor.Books.Add(book);
-	        }
-	        else
-	        {
-		        // Create the author
-	            await _authorService.CreateAuthorAsync(book.Author);
-	        }
-	    }
-	}
-
-	private async Task HandlePublisherAsync(Book book)
-	{
-	    if (book.Publisher != null)
-	    {
-	        var existingPublisher = await _publisherService.GetPublisherByNameAsync(book.Publisher.Name);
-	        if (existingPublisher != null)
-	        {
-	            _context.Entry(existingPublisher).State = EntityState.Unchanged;
-	            book.Publisher = existingPublisher;
-	            existingPublisher.Books ??= new List<Book>();
-	            existingPublisher.Books.Add(book);
-	        }
-	        else
-	        {
-	            await _publisherService.CreatePublisherAsync(book.Publisher);
-	        }
-	    }
-	}
-
-	private async Task HandleSubjectsAsync(Book book)
-	{
-		if (book.Subjects != null)
-		{
-			foreach (var subject in book.Subjects)
-			{
-				var existingSubject = await _subjectService.GetSubjectByNameAsync(subject.Name);
-				if (existingSubject != null)
-				{
-					// Update the properties of the existingSubject here
-					// ...
-
-					var bookSubject = new BookSubject
-					{
-						Book = book,
-						Subject = existingSubject
-					};
-					book.BookSubjects.Add(bookSubject);
-					existingSubject.BookSubjects.Add(bookSubject);
-				}
-				else
-				{
-					await _subjectService.CreateSubjectAsync(subject);
-				}
-			}
-		}
-	}
-
-	private async Task HandleCoverAsync(Book book)
-	{
-	    if (book.Cover != null)
-	    {
-	        var existingCover = await _coverService.GetCoverAsync(book.CoverId);
-	        if (existingCover != null)
-	        {
-	            _context.Entry(existingCover).State = EntityState.Unchanged;
-	            book.Cover = existingCover;
-	        }
-	        else
-	        {
-	            await _coverService.CreateCoverAsync(book.Cover);
-	        }
-	    }
-	}
-	
-	public async Task<Book?> GetBookAsync(int id)
-	{
-		return await _context.Books.FindAsync(id);
-	}
-	
-	public async Task<Book?> GetBookByIsbnAsync(string isbn)
-	{
-		return await _context.Books.FirstOrDefaultAsync(b => b.ISBN == isbn);
-	}
-	
-	
-
-	/*public async Task<Book?> CreateBookAsync(Book? book)
-	{
-		_context.Books.Add(book);
-		await _context.SaveChangesAsync();
-		return book;
-	}
-
-	public async Task<Book?> GetBookAsync(int id)
-	{
-		return await _context.Books.FindAsync(id);
-	}
-
-	public async Task<Book?> GetBookByIsbnAsync(string isbn)
-	{
-		return await _context.Books.FirstOrDefaultAsync(b => b.ISBN == isbn);
-	}
-
-	public async Task<IEnumerable<Book?>> GetAllBooksAsync()
-	{
-		return await _context.Books.ToListAsync();
-	}
-
-	public async Task<IEnumerable<Book?>> GetBooksByAuthorAsync(string author)
-	{
-		return await _context.Books.Where(b => b.Author == author).ToListAsync();
+			Data = book,
+			Message = "Book loaded",
+			Success = true
+		};
 		
 	}
 
-	public async Task<IEnumerable<Book?>> GetBooksByTitleAsync(string title)
+	public async Task<ServiceResponse<Book>> InsertOrIgnoreBookAsync(Book book)
 	{
-		return await _context.Books.Where(b => b.Title == title).ToListAsync();
-	}
-
-	public async Task<IEnumerable<Book?>> GetBooksByPublisherAsync(string publisher)
-	{
-		throw new NotImplementedException();
-	}
-
-	public async Task<IEnumerable<Book?>> GetBooksByGenreAsync(string genre)
-	{
-		throw new NotImplementedException();
-	}
-
-	public async Task<IEnumerable<Book?>> GetBooksByPublicationYearAsync(string publicationYear)
-	{
-		throw new NotImplementedException();
-	}
-
-	public async Task<IEnumerable<Book?>> GetBooksByNumberOfPagesAsync(int numberOfPages)
-	{
-		return await _context.Books.Where(b => b.PageCount == numberOfPages).ToListAsync();
-	}
-
-	public async Task<IEnumerable<Book?>> GetBooksWithMorePagesThanAsync(int numberOfPages)
-	{
-		return await _context.Books.Where(b => b.PageCount > numberOfPages).ToListAsync();
-	}
-
-	public async Task<IEnumerable<Book?>> GetBooksWithLessPagesThanAsync(int numberOfPages)
-	{
-		return await _context.Books.Where(b => b.PageCount < numberOfPages).ToListAsync();
-	}
-
-	public async Task<Book?> UpdateBookAsync(Book book)
-	{
-		var dbBook = await _context.Books.FindAsync(book.Id);
-
-		if (dbBook != null)
+		await using var transaction = await _context.Database.BeginTransactionAsync();
+		try
 		{
-			dbBook.Id = book.Id;
-			dbBook.ISBN = book.ISBN;
-			dbBook.Title = book.Title;
-			dbBook.Author = book.Author;
-			dbBook.Publisher = book.Publisher;
-			dbBook.PageCount = book.PageCount;
+			var data = await _context.Books.FirstOrDefaultAsync(b => b.Isbn == book.Isbn);
+
+			if (data != null)
+			{
+				await transaction.RollbackAsync();
+				var responseFail = new ServiceResponse<Book>
+				{
+					Data = data,
+					Message = "Book already exists",
+					Success = false
+				};
+				return responseFail;
+			}
+			
+			// Handle insertion or ignoring of related entities
+			var author = await _authorService.InsertOrIgnoreAuthorAsync(book.Author);
+			book.Author = author.Data;
+			
+			var publisher = await _publisherService.InsertOrIgnorePublisherAsync(book.Publisher);
+			book.Publisher = publisher.Data;
+			
+			var covers = await _coverService.InsertOrIgnoreCoverAsync(book.Cover);
+			book.Cover = covers.Data;
+			
+			var existingSubjects = 
+				await _subjectService.InsertOrIgnoreSubjectsAsync(book.Subjects.ToList());
+
+			if (existingSubjects.Data != null) book.Subjects = existingSubjects.Data;
+
+			// Add the book to the context and save changes
+			_context.Books.Add(book);
+			await _context.SaveChangesAsync();
+
+			await transaction.CommitAsync();
+				
+			var responseSuccess = new ServiceResponse<Book>
+			{
+				Data = book,
+				Message = "Book added",
+				Success = true
+			};
+			return responseSuccess;
 		}
+		catch (Exception)
+		{
+			await transaction.RollbackAsync();
+			throw; // Rethrow the exception for handling at a higher level
+		}
+
+		/*var existingBook = await _context.Books.FirstOrDefaultAsync(b => b.Isbn == book.Isbn);
+		if (existingBook == null)
+		{
+			_context.Books.Add(book);
+			await _context.SaveChangesAsync();
+			
+			var responseSuccess = new ServiceResponse<Book>
+			{
+				Data = book,
+				Message = "Book added",
+				Success = true
+			};
+			return responseSuccess;
+		}
+		
+		var responseFail = new ServiceResponse<Book>
+		{
+			Data = existingBook,
+			Message = "Book already exists",
+			Success = false
+		};
+		return responseFail;*/
+	}
+
+	public async Task<ServiceResponse<Book>> GetBookByIsbnAsync(string isbn)
+	{
+		var book = await _context.Books
+			.Include(b => b.Author)
+			.Include(b => b.Publisher)
+			.Include(b => b.Cover)
+			.Include(b => b.Subjects)
+			.FirstOrDefaultAsync(b => b.Isbn == isbn);
+
+		if (book == null)
+		{
+			var responseFail = new ServiceResponse<Book>
+			{
+				Data = null,
+				Message = "Book not found",
+				Success = false
+			};
+			return responseFail;
+		}
+		
+		var responseSuccess = new ServiceResponse<Book>
+		{
+			Data = book,
+			Message = "Book found",
+			Success = true
+		};
+		return responseSuccess;
+	}
+
+	public async Task<ServiceResponse<Book>> GetBookAsync(long id)
+	{
+		var book = await _context.Books
+			.Include(b => b.Author)
+			.Include(b => b.Publisher)
+			.Include(b => b.Cover)
+			.Include(b => b.Subjects)
+			.FirstOrDefaultAsync(b => b.Id == id);
+
+		if (book == null)
+		{
+			var responseFail = new ServiceResponse<Book>
+			{
+				Data = null,
+				Message = "Book not found",
+				Success = false
+			};
+			return responseFail;
+		}
+		
+		var responseSuccess = new ServiceResponse<Book>
+		{
+			Data = book,
+			Message = "Book found",
+			Success = true
+		};
+		return responseSuccess;
+	}
+
+	public async Task<ServiceResponse<Book>> GetBookByTitleAsync(string title)
+	{
+		var book = await _context.Books
+			.Include(b => b.Author)
+			.Include(b => b.Publisher)
+			.Include(b => b.Cover)
+			.Include(b => b.Subjects)
+			.FirstOrDefaultAsync(b => b.Title == title);
+
+		if (book == null)
+		{
+			var responseFail = new ServiceResponse<Book>
+			{
+				Data = null,
+				Message = "Book not found",
+				Success = false
+			};
+			return responseFail;
+		}
+		
+		var responseSuccess = new ServiceResponse<Book>
+		{
+			Data = book,
+			Message = "Book found",
+			Success = true
+		};
+		return responseSuccess;
+	}
+
+	public async Task<ServiceResponse<IEnumerable<Book>>> GetBooksAsync()
+	{
+		var books = await _context.Books
+			.Include(b => b.Author)
+			.Include(b => b.Publisher)
+			.Include(b => b.Cover)
+			.Include(b => b.Subjects)
+			.ToListAsync();
+
+		var responseSuccess = new ServiceResponse<IEnumerable<Book>>
+		{
+			Data = books,
+			Message = "Books found",
+			Success = true
+		};
+		return responseSuccess;
+	}
+
+	public async Task<ServiceResponse<IEnumerable<Book>>> GetBooksByAuthorAsync(string authorName)
+	{
+		var author = await _authorService.GetAuthorByNameAsync(authorName);
+		if (!author.Success)
+		{
+			var responseFail = new ServiceResponse<IEnumerable<Book>>
+			{
+				Data = null,
+				Message = "Author not found",
+				Success = false
+			};
+			return responseFail;
+		}
+
+		var books = await _context.Books
+			.Include(b => b.Author)
+			.Include(b => b.Publisher)
+			.Include(b => b.Cover)
+			.Include(b => b.Subjects)
+			.Where(b => b.Author.Id == author.Data.Id)
+			.ToListAsync();
+
+		var responseSuccess = new ServiceResponse<IEnumerable<Book>>
+		{
+			Data = books,
+			Message = "Books found",
+			Success = true
+		};
+		return responseSuccess;
+	}
+
+	public async Task<ServiceResponse<IEnumerable<Book>>> GetBooksBySubjectAsync(string subject)
+	{
+		var subjectData = await _subjectService.GetSubjectByNameAsync(subject);
+		if (!subjectData.Success)
+		{
+			var responseFail = new ServiceResponse<IEnumerable<Book>>
+			{
+				Data = null,
+				Message = "Subject not found",
+				Success = false
+			};
+			return responseFail;
+		}
+
+		var books = await _context.Books
+			.Include(b => b.Author)
+			.Include(b => b.Publisher)
+			.Include(b => b.Cover)
+			.Include(b => b.Subjects)
+			.Where(b => b.Subjects.Any(s => s.Id == subjectData.Data.Id))
+			.ToListAsync();
+
+		var responseSuccess = new ServiceResponse<IEnumerable<Book>>
+		{
+			Data = books,
+			Message = "Books found",
+			Success = true
+		};
+		return responseSuccess;
+	}
+
+	public async Task<ServiceResponse<IEnumerable<Book>>> GetBooksByPublisherAsync(string publisher)
+	{
+		var publisherData = await _publisherService.GetPublisherByNameAsync(publisher);
+		if (!publisherData.Success)
+		{
+			var responseFail = new ServiceResponse<IEnumerable<Book>>
+			{
+				Data = null,
+				Message = "Publisher not found",
+				Success = false
+			};
+			return responseFail;
+		}
+
+		var books = await _context.Books
+			.Include(b => b.Author)
+			.Include(b => b.Publisher)
+			.Include(b => b.Cover)
+			.Include(b => b.Subjects)
+			.Where(b => b.Publisher.Id == publisherData.Data.Id)
+			.ToListAsync();
+
+		var responseSuccess = new ServiceResponse<IEnumerable<Book>>
+		{
+			Data = books,
+			Message = "Books found",
+			Success = true
+		};
+		return responseSuccess;
+	}
+
+	public async Task<ServiceResponse<Book>> UpdateBookAsync(Book book)
+	{
+		var existingBook = await _context.Books.FirstOrDefaultAsync(b => b.Id == book.Id);
+		if (existingBook == null)
+		{
+			var responseFail = new ServiceResponse<Book>
+			{
+				Data = null,
+				Message = "Book not found",
+				Success = false
+			};
+			return responseFail;
+		}
+
+		existingBook.Title = book.Title;
+		existingBook.Isbn = book.Isbn;
+		existingBook.Author = book.Author;
+		existingBook.Publisher = book.Publisher;
+		existingBook.Cover = book.Cover;
+		existingBook.Subjects = book.Subjects;
 
 		await _context.SaveChangesAsync();
-		return dbBook;
+
+		var responseSuccess = new ServiceResponse<Book>
+		{
+			Data = existingBook,
+			Message = "Book updated",
+			Success = true
+		};
+		return responseSuccess;
 	}
 
-	public async Task DeleteBookAsync(int id)
+	public async Task<ServiceResponse<Book>> DeleteBookAsync(long id)
 	{
-		var book = await _context.Books.FindAsync(id);
-		if (book != null)
+		var book = await _context.Books.FirstOrDefaultAsync(b => b.Id == id);
+		if (book == null)
 		{
-			_context.Books.Remove(book);
-			await _context.SaveChangesAsync();
+			var responseFail = new ServiceResponse<Book>
+			{
+				Data = null,
+				Message = "Book not found",
+				Success = false
+			};
+			return responseFail;
 		}
+
+		_context.Books.Remove(book);
+		await _context.SaveChangesAsync();
+
+		var responseSuccess = new ServiceResponse<Book>
+		{
+			Data = book,
+			Message = "Book deleted",
+			Success = true
+		};
+		return responseSuccess;
 	}
 
-	public async Task DeleteBookByIsbnAsync(string isbn)
+	public async Task<ServiceResponse<Book>> DeleteBookByIsbnAsync(string isbn)
 	{
-		var book = await _context.Books.FirstOrDefaultAsync(b => b.ISBN == isbn);
-		if (book != null)
+		var book = await _context.Books.FirstOrDefaultAsync(b => b.Isbn == isbn);
+		if (book == null)
 		{
-			_context.Books.Remove(book);
-			await _context.SaveChangesAsync();
+			var responseFail = new ServiceResponse<Book>
+			{
+				Data = null,
+				Message = "Book not found",
+				Success = false
+			};
+			return responseFail;
 		}
-	}*/
+
+		_context.Books.Remove(book);
+		await _context.SaveChangesAsync();
+
+		var responseSuccess = new ServiceResponse<Book>
+		{
+			Data = book,
+			Message = "Book deleted",
+			Success = true
+		};
+		return responseSuccess;
+	}
 }
