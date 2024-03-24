@@ -6,6 +6,8 @@ using LibraryManager.Core.Services.CoverService;
 using LibraryManager.Core.Services.PublisherService;
 using LibraryManager.Core.Services.SubjectService;
 using LibraryManager.Core.Validators.AuthorValidator;
+using LibraryManager.Core.Validators.PublisherValidator;
+using LibraryManager.Core.Validators.SubjectValidator;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Refit;
@@ -23,6 +25,8 @@ public static class DependencyInjection
 		services.AddScoped<ISubjectService, SubjectService>();
 
 		services.AddScoped<IAuthorValidator, AuthorValidator>();
+		services.AddScoped<IPublisherValidator, PublisherValidator>();
+		services.AddScoped<ISubjectValidator, SubjectValidator>();
 		
 		return services;
 	}
