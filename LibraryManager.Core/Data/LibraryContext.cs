@@ -25,7 +25,6 @@ public class LibraryContext : DbContext
 		if (_dbConnectionConfig.ProviderName == "SQLite")
 		{
 			var connectionStringBuilder = new SQLiteConnectionStringBuilder(_dbConnectionConfig.ConnectionString);
-			//var databaseFilePath = connectionStringBuilder.DataSource;
 
 			// Set databaseFilePath to currentWorkingDirectory/database.db
 			var databaseFilePath = $"{Directory.GetCurrentDirectory()}/{connectionStringBuilder.DataSource}";

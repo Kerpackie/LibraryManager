@@ -9,7 +9,7 @@ namespace LibraryManager.Core.Services.BookService
 		public Task<ServiceResponse<Book>> GetBookByIsbnAsync(string isbn);
 		public Task<ServiceResponse<Book>> GetBookAsync(long id);
 		public Task<ServiceResponse<Book>> GetBookByTitleAsync(string title);
-		public Task<ServiceResponse<IEnumerable<Book>>> GetBooksAsync();
+		public Task<ServiceResponse<IEnumerable<Book>>> GetAllBooksAsync();
 		public Task<ServiceResponse<IEnumerable<Book>>> GetBooksByAuthorAsync(string authorName);
 		public Task<ServiceResponse<IEnumerable<Book>>> GetBooksBySubjectAsync(string subject);
 		public Task<ServiceResponse<IEnumerable<Book>>> GetBooksByPublisherAsync(string publisher);

@@ -120,29 +120,6 @@ public class BookService : IBookService
 			await transaction.RollbackAsync();
 			throw; // Rethrow the exception for handling at a higher level
 		}
-
-		/*var existingBook = await _context.Books.FirstOrDefaultAsync(b => b.Isbn == book.Isbn);
-		if (existingBook == null)
-		{
-			_context.Books.Add(book);
-			await _context.SaveChangesAsync();
-			
-			var responseSuccess = new ServiceResponse<Book>
-			{
-				Data = book,
-				Message = "Book added",
-				Success = true
-			};
-			return responseSuccess;
-		}
-		
-		var responseFail = new ServiceResponse<Book>
-		{
-			Data = existingBook,
-			Message = "Book already exists",
-			Success = false
-		};
-		return responseFail;*/
 	}
 
 	public async Task<ServiceResponse<Book>> GetBookByIsbnAsync(string isbn)
@@ -232,7 +209,7 @@ public class BookService : IBookService
 		return responseSuccess;
 	}
 
-	public async Task<ServiceResponse<IEnumerable<Book>>> GetBooksAsync()
+	public async Task<ServiceResponse<IEnumerable<Book>>> GetAllBooksAsync()
 	{
 		var books = await _context.Books
 			.Include(b => b.Author)
