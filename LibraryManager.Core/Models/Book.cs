@@ -6,7 +6,7 @@ namespace LibraryManager.Core.Models
 	public class Book
 	{
 		[JsonIgnore]
-		public int Id { get; set; }
+		[Key] public int Id { get; set; }
 		public string? ISBN { get; set; }
 		public string? Title { get; set; }
 		public Author? Author { get; set; }
@@ -21,7 +21,7 @@ namespace LibraryManager.Core.Models
 		public Cover? Cover { get; set; }
 		public List<Subject>? Subjects { get; set; }
 		[JsonIgnore]
-		public ICollection<BookSubject>? BookSubjects { get; set; }
+		public ICollection<BookSubject> BookSubjects { get; set; }
 
 		public Book()
 		{

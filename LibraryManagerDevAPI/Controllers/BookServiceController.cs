@@ -9,9 +9,9 @@ namespace LibraryManagerDevAPI.Controllers;
 [ApiController]
 public class BookServiceController : ControllerBase
 {
-	private readonly IBookService _bookService;
+	private readonly IBookService2 _bookService;
 
-	public BookServiceController(IBookService bookService)
+	public BookServiceController(IBookService2 bookService)
 	{
 		_bookService = bookService;
 	}
@@ -23,8 +23,16 @@ public class BookServiceController : ControllerBase
 
 		return Ok(book);
 	}
+	
+	[HttpPost("api-demo")]
+	public async Task<IActionResult> CreateAPIDemo([FromBody] Book book)
+	{
+		await _bookService.AddBookAsync(book);
 
-	[HttpGet("{isbn}")]
+		return CreatedAtAction(nameof(GetAPIDemo), new {isbn = book.ISBN}, book);
+	}
+
+	/*[HttpGet("{isbn}")]
 	[ProducesResponseType(typeof(Book), StatusCodes.Status200OK)]
 	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	public async Task<IActionResult> Get([FromRoute] string isbn)
@@ -122,6 +130,6 @@ public class BookServiceController : ControllerBase
 		await _bookService.CreateBookAsync(book);
 
 		return CreatedAtAction(nameof(Get), new {id = book.Id}, book);
-	}
+	}*/
 	
 }

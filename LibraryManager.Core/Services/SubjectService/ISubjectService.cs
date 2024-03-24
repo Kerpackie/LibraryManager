@@ -6,6 +6,7 @@ public interface ISubjectService
 {
 	Task<Subject> CreateSubjectAsync(Subject subject);
 	Task<Subject?> GetSubjectAsync(int id);
+	Task<Subject?> GetSubjectByNameAsync(string name);
 	Task<Subject> UpdateSubjectAsync(Subject subject);
 	Task DeleteSubjectAsync(int id);
 }

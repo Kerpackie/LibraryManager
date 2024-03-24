@@ -1,6 +1,10 @@
 ﻿using LibraryManager.Core.Data;
+using LibraryManager.Core.Services.AuthorService;
 using LibraryManager.Core.Services.BookService;
+using LibraryManager.Core.Services.CoverService;
 using LibraryManager.Core.Services.OpenLibraryAPIService;
+using LibraryManager.Core.Services.PublisherService;
+using LibraryManager.Core.Services.SubjectService;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Refit;
@@ -11,7 +15,12 @@ public static class DependencyInjection
 {
 	public static IServiceCollection AddLibraryManagerCore(this IServiceCollection services)
 	{
-		services.AddScoped<IBookService, BookService>();
+		services.AddTransient<IBookService2, BookService>();
+		services.AddTransient<IAuthorService, AuthorService>();
+		services.AddTransient<ICoverService, CoverService>();
+		services.AddTransient<IPublisherService, PublisherService>();
+		services.AddTransient<ISubjectService, SubjectService>();
+		
 		return services;
 	}
 	

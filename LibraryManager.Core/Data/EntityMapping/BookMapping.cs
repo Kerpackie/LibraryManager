@@ -20,11 +20,21 @@ public class BookMapping : IEntityTypeConfiguration<Book>
             .HasMaxLength(128)
             .IsRequired();
         
+        builder.HasIndex(a => a.ISBN)
+            .IsUnique();
+        
+        builder.HasKey(b => b.Id)
+            .HasName("PK_Books");
+        
+
+        /*builder
+            .HasKey(b => b.Id);*/
+
         /*builder.Property(book => book.PublicationYear)
             .HasColumnType("char(4)")
             .HasConversion(new DateTimeToChar4Converter());
             */
-        
-        
+
+
     }
 }

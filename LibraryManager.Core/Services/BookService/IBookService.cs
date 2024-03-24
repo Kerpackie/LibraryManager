@@ -4,8 +4,8 @@ namespace LibraryManager.Core.Services.BookService
 {
 	public interface IBookService
 	{
-		Task<Book> GetBookFromApiAsync(string isbn);
-		Task<Book?> CreateBookAsync(Book? book);
+		public Task<Book> GetBookFromApiAsync(string isbn);
+		/*Task<Book?> CreateBookAsync(Book? book);
 		Task<Book?> GetBookAsync(int id);
 		Task<Book?> GetBookByIsbnAsync(string isbn);
 		Task<IEnumerable<Book?>> GetAllBooksAsync();
@@ -19,6 +19,6 @@ namespace LibraryManager.Core.Services.BookService
 		Task<IEnumerable<Book?>> GetBooksWithLessPagesThanAsync(int numberOfPages);
 		Task<Book?> UpdateBookAsync(Book book);
 		Task DeleteBookAsync(int id);
-		Task DeleteBookByIsbnAsync(string isbn);
+		Task DeleteBookByIsbnAsync(string isbn);*/
 	}
 }

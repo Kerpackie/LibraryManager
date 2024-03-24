@@ -52,6 +52,10 @@ namespace LibraryManager.Core.Data
 		{
 			modelBuilder.ApplyConfiguration(new BookMapping());
 			modelBuilder.ApplyConfiguration(new BookSubjectMapping());
+			modelBuilder.ApplyConfiguration(new AuthorMapping());
+			modelBuilder.ApplyConfiguration(new CoverMapping());
+			modelBuilder.ApplyConfiguration(new PublisherMapping());
+			modelBuilder.ApplyConfiguration(new SubjectMapping());
 		}
 	}
 }

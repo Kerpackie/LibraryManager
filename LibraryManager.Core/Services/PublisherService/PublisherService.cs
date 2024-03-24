@@ -25,6 +25,11 @@ public class PublisherService : IPublisherService
         return await _context.Publishers.FindAsync(id);
     }
 
+    public async Task<Publisher?> GetPublisherByNameAsync(string name)
+    {
+        return await _context.Publishers.FirstOrDefaultAsync(p => p.Name == name);
+    }
+
     public async Task<Publisher> UpdatePublisherAsync(Publisher publisher)
     {
         _context.Entry(publisher).State = EntityState.Modified;
