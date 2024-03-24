@@ -10,9 +10,9 @@ namespace LibraryManager.Core.Services.AuthorService
 	public class AuthorService : IAuthorService
 	{
 		private readonly LibraryContext _context;
-		private readonly AuthorValidator _authorValidator;
+		private readonly IAuthorValidator _authorValidator;
 
-		public AuthorService(LibraryContext context, AuthorValidator authorValidator)
+		public AuthorService(LibraryContext context, IAuthorValidator authorValidator)
 		{
 			_context = context;
 			_authorValidator = authorValidator;

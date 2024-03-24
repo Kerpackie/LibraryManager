@@ -1,5 +1,6 @@
 ﻿using LibraryManager.Core.Data;
 using LibraryManager.Core.Models;
+using LibraryManager.Core.Validators.PublisherValidator;
 using Microsoft.EntityFrameworkCore;
 
 namespace LibraryManager.Core.Services.PublisherService;
@@ -7,14 +8,28 @@ namespace LibraryManager.Core.Services.PublisherService;
 public class PublisherService : IPublisherService
 {
 	private readonly LibraryContext _context;
+	private readonly IPublisherValidator _publisherValidator;
 
-	public PublisherService(LibraryContext context)
+	public PublisherService(LibraryContext context, IPublisherValidator publisherValidator)
 	{
 		_context = context;
+		_publisherValidator = publisherValidator;
 	}
 
 	public async Task<ServiceResponse<Publisher>> InsertOrIgnorePublisherAsync(Publisher publisher)
 	{
+		var validateResult = _publisherValidator.Validate(publisher);
+
+		if (!validateResult.IsValid)
+		{
+			return new ServiceResponse<Publisher>
+			{
+				Data = null,
+				Message = string.Join(", ", validateResult.Errors),
+				Success = false
+			};
+		}
+		
 		publisher.Trim();
 		
 		var existingPublisher = await _context.Publishers.FirstOrDefaultAsync(p => p.Name == publisher.Name);
@@ -98,6 +113,18 @@ public class PublisherService : IPublisherService
 
 	public async Task<ServiceResponse<Publisher>> UpdatePublisherAsync(Publisher publisher)
 	{
+		var validateResult = _publisherValidator.Validate(publisher);
+
+		if (!validateResult.IsValid)
+		{
+			return new ServiceResponse<Publisher>
+			{
+				Data = null,
+				Message = string.Join(", ", validateResult.Errors),
+				Success = false
+			};
+		}
+		
 		var existingPublisher = await _context.Publishers.FirstOrDefaultAsync(p => p.Id == publisher.Id);
 
 		if (existingPublisher == null)
