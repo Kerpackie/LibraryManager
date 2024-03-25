@@ -4,17 +4,17 @@ namespace LibraryManager.Core.Models
 {
     public class Book
     {
-        public long Id { get; set; }
+        public int Id { get; set; }
         public string? Isbn { get; set; }
         public string Title { get; set; } = null!;
-        public long? AuthorId { get; set; }
-        public long PageCount { get; set; }
-        public long PagesRead { get; set; }
-        public long Owned { get; set; }
-        public long Loaned { get; set; }
-        public long? PublisherId { get; set; }
-        public long CoverId { get; set; }
-        public long CoversDownloaded { get; set; }
+        public int? AuthorId { get; set; }
+        public int PageCount { get; set; }
+        public int PagesRead { get; set; }
+        public int Owned { get; set; }
+        public int Loaned { get; set; }
+        public int? PublisherId { get; set; }
+        public int CoverId { get; set; }
+        public int CoversDownloaded { get; set; }
 
         public virtual Author? Author { get; set; }
         public virtual Cover Cover { get; set; } = null!;

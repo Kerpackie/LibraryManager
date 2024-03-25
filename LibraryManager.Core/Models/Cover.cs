@@ -7,7 +7,7 @@
             Books = new HashSet<Book>();
         }
 
-        public long Id { get; set; }
+        public int Id { get; set; }
         public string? Small { get; set; }
         public string? Medium { get; set; }
         public string? Large { get; set; }

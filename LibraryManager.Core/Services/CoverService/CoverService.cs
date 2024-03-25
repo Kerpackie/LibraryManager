@@ -1,5 +1,6 @@
 ﻿using LibraryManager.Core.Data;
 using LibraryManager.Core.Models;
+using LibraryManager.Core.Validators.CoverValidator;
 using Microsoft.EntityFrameworkCore;
 
 namespace LibraryManager.Core.Services.CoverService;
@@ -8,15 +9,29 @@ public class CoverService : ICoverService
 {
 	private readonly LibraryContext _context;
 	private readonly IHttpClientFactory _clientFactory;
+	private readonly ICoverValidator _coverValidator;
 
-	public CoverService(LibraryContext context, IHttpClientFactory clientFactory)
+	public CoverService(LibraryContext context, IHttpClientFactory clientFactory, ICoverValidator coverValidator)
 	{
 		_context = context;
 		_clientFactory = clientFactory;
+		_coverValidator = coverValidator;
 	}
 
 	public async Task<ServiceResponse<Cover>> InsertOrIgnoreCoverAsync(Cover cover)
 	{
+		var validationResult = _coverValidator.Validate(cover);
+
+		if (!validationResult.IsValid)
+		{
+			return new ServiceResponse<Cover>
+			{
+				Data = null,
+				Message = string.Join(", ", validationResult.Errors),
+				Success = false
+			};
+		}
+		
 		cover.Trim();
 		
 		var existingCover = await _context.Covers.FirstOrDefaultAsync(c => c.Id == cover.Id);
@@ -72,13 +87,25 @@ public class CoverService : ICoverService
 		return responseSuccess;
 	}
 
-	public async Task<ServiceResponse<Cover?>> UpdateCoverAsync(Cover cover)
+	public async Task<ServiceResponse<Cover>> UpdateCoverAsync(Cover cover)
 	{
+		var validationResult = _coverValidator.Validate(cover);
+
+		if (!validationResult.IsValid)
+		{
+			return new ServiceResponse<Cover>
+			{
+				Data = null,
+				Message = string.Join(", ", validationResult.Errors),
+				Success = false
+			};
+		}
+		
 		var existingCover = await _context.Covers.FirstOrDefaultAsync(c => c.Id == cover.Id);
 
 		if (existingCover == null)
 		{
-			var responseFail = new ServiceResponse<Cover?>
+			var responseFail = new ServiceResponse<Cover>
 			{
 				Data = null,
 				Message = "Cover not found",
@@ -91,7 +118,7 @@ public class CoverService : ICoverService
 		_context.Covers.Update(cover);
 		await _context.SaveChangesAsync();
 
-		var responseSuccess = new ServiceResponse<Cover?>
+		var responseSuccess = new ServiceResponse<Cover>
 		{
 			Data = cover,
 			Message = "Cover updated",
@@ -101,15 +128,15 @@ public class CoverService : ICoverService
 		return responseSuccess;
 	}
 
-	public async Task<ServiceResponse<Cover>> DeleteCoverAsync(int id)
+	public async Task<ServiceResponse<bool>> DeleteCoverAsync(int id)
 	{
 		var cover = await _context.Covers.FirstOrDefaultAsync(c => c.Id == id);
 
 		if (cover == null)
 		{
-			var responseFail = new ServiceResponse<Cover>
+			var responseFail = new ServiceResponse<bool>
 			{
-				Data = null,
+				Data = false,
 				Message = "Cover not found",
 				Success = false
 			};
@@ -120,9 +147,9 @@ public class CoverService : ICoverService
 		_context.Covers.Remove(cover);
 		await _context.SaveChangesAsync();
 
-		var responseSuccess = new ServiceResponse<Cover>
+		var responseSuccess = new ServiceResponse<bool>
 		{
-			Data = cover,
+			Data = true,
 			Message = "Cover deleted",
 			Success = true
 		};
@@ -132,6 +159,7 @@ public class CoverService : ICoverService
 	
 	public async Task<ServiceResponse<bool>> DownloadCoverImageAsync(string isbn, Cover cover)
 	{
+		
 		var response = new ServiceResponse<bool>();
 		try
 		{

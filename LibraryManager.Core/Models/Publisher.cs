@@ -7,7 +7,7 @@
             Books = new HashSet<Book>();
         }
 
-        public long Id { get; set; }
+        public int Id { get; set; }
         public string Name { get; set; } = null!;
 
         public virtual ICollection<Book> Books { get; set; }
