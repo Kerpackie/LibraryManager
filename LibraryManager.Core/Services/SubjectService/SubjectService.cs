@@ -1,5 +1,6 @@
 ﻿using LibraryManager.Core.Data;
 using LibraryManager.Core.Models;
+using LibraryManager.Core.Validators.SubjectValidator;
 using Microsoft.EntityFrameworkCore;
 
 namespace LibraryManager.Core.Services.SubjectService;
@@ -7,14 +8,28 @@ namespace LibraryManager.Core.Services.SubjectService;
 public class SubjectService : ISubjectService
 {
 	private readonly LibraryContext _context;
+	private readonly ISubjectValidator _subjectValidator;
 
-	public SubjectService(LibraryContext context)
+	public SubjectService(LibraryContext context, ISubjectValidator subjectValidator)
 	{
 		_context = context;
+		_subjectValidator = subjectValidator;
 	}
 
 	public async Task<ServiceResponse<Subject>> InsertOrIgnoreSubjectAsync(Subject subject)
 	{
+		var validateResult = _subjectValidator.Validate(subject);
+		
+		if (!validateResult.IsValid)
+		{
+			return new ServiceResponse<Subject>
+			{
+				Data = null,
+				Message = string.Join(", ", validateResult.Errors),
+				Success = false
+			};
+		}
+		
 		subject.Trim();
 		
 		var existingSubject = await _context.Subjects.FirstOrDefaultAsync(s => s.Name == subject.Name);
@@ -44,31 +59,50 @@ public class SubjectService : ISubjectService
 		return responseFail;
 	}
 
+	
 	public async Task<ServiceResponse<List<Subject>>> InsertOrIgnoreSubjectsAsync(List<Subject> subjects)
 	{
-		subjects.ForEach(s => s.Trim());
-		
-		var existingSubjects = new List<Subject>();
+		var allErrors = new List<string>();
+		var validSubjects = new List<Subject>();
 
 		foreach (var subject in subjects)
 		{
+			var validateResult = _subjectValidator.Validate(subject);
+			if (!validateResult.IsValid)
+			{
+				allErrors.AddRange(validateResult.Errors);
+				continue;
+			}
+
+			subject.Trim();
+
 			var existingSubject = await _context.Subjects.FirstOrDefaultAsync(s => s.Name == subject.Name);
 
 			if (existingSubject == null)
 			{
 				_context.Subjects.Add(subject);
-				existingSubjects.Add(subject);
 				await _context.SaveChangesAsync();
+				validSubjects.Add(subject);
 			}
 			else
 			{
-				existingSubjects.Add(existingSubject);
+				validSubjects.Add(existingSubject);
 			}
 		}
-		
+
+		if (allErrors.Any())
+		{
+			return new ServiceResponse<List<Subject>>
+			{
+				Data = validSubjects,
+				Message = string.Join(", ", allErrors),
+				Success = false
+			};
+		}
+
 		return new ServiceResponse<List<Subject>>
 		{
-			Data = existingSubjects,
+			Data = validSubjects,
 			Message = "",
 			Success = true
 		};
@@ -128,6 +162,18 @@ public class SubjectService : ISubjectService
 
 	public async Task<ServiceResponse<Subject>> UpdateSubjectAsync(Subject subject)
 	{
+		var validateResult = _subjectValidator.Validate(subject);
+		
+		if (!validateResult.IsValid)
+		{
+			return new ServiceResponse<Subject>
+			{
+				Data = null,
+				Message = string.Join(", ", validateResult.Errors),
+				Success = false
+			};
+		}
+		
 		var existingSubject = await _context.Subjects.FirstOrDefaultAsync(s => s.Id == subject.Id);
 		
 		if (existingSubject == null)

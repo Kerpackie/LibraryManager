@@ -21,7 +21,7 @@ public class PublisherValidator : IPublisherValidator
 			result.Errors.Add("Author name is null or empty");
 		}
 		
-		if (publisher.Name.Length > 100)
+		if (publisher.Name is {Length: > 100})
 		{
 			result.IsValid = false;
 			result.Errors.Add("Publisher name is too long");
