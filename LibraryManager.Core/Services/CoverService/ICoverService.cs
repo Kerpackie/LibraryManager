@@ -8,4 +8,6 @@ public interface ICoverService
 	Task<ServiceResponse<Cover?>> GetCoverAsync(int id);
 	Task<ServiceResponse<Cover?>> UpdateCoverAsync(Cover cover);
 	Task<ServiceResponse<Cover>> DeleteCoverAsync(int id);
+	Task<ServiceResponse<bool>> DownloadCoverImageAsync(string isbn, Cover cover);
+
 }

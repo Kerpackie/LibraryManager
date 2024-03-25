@@ -14,7 +14,7 @@ public class OpenLibraryBookApiService : IBookApiService
 	public async Task<ServiceResponse<T>> GetBookFromApiAsync<T>(string isbn) where T : class
 	{
 		var response = await _openLibraryApiService.GetBookByIsbn(isbn);
-		if (response != null && response.ContainsKey($"ISBN:{isbn}"))
+		if (response.ContainsKey($"ISBN:{isbn}"))
 		{
 			var book = response[$"ISBN:{isbn}"];
 			var responseSuccess = new ServiceResponse<T>

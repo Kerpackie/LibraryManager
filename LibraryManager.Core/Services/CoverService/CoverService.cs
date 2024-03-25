@@ -7,10 +7,12 @@ namespace LibraryManager.Core.Services.CoverService;
 public class CoverService : ICoverService
 {
 	private readonly LibraryContext _context;
+	private readonly IHttpClientFactory _clientFactory;
 
-	public CoverService(LibraryContext context)
+	public CoverService(LibraryContext context, IHttpClientFactory clientFactory)
 	{
 		_context = context;
+		_clientFactory = clientFactory;
 	}
 
 	public async Task<ServiceResponse<Cover>> InsertOrIgnoreCoverAsync(Cover cover)
@@ -126,5 +128,65 @@ public class CoverService : ICoverService
 		};
 
 		return responseSuccess;
+	}
+	
+	public async Task<ServiceResponse<bool>> DownloadCoverImageAsync(string isbn, Cover cover)
+	{
+		var response = new ServiceResponse<bool>();
+		try
+		{
+			var client = _clientFactory.CreateClient();
+
+			// Ensure the directory exists
+			Directory.CreateDirectory($"./Images/{isbn}");
+
+			// Download and save each cover in parallel
+			var tasks = new[]
+			{
+				DownloadAndSaveCoverAsync(client, cover.Small, $"{isbn}/{isbn}_small.jpg"),
+				DownloadAndSaveCoverAsync(client, cover.Medium, $"{isbn}/{isbn}_medium.jpg"),
+				DownloadAndSaveCoverAsync(client, cover.Large, $"{isbn}/{isbn}_large.jpg")
+			};
+
+			await Task.WhenAll(tasks);
+
+			response.Data = true;
+			response.Message = "Images downloaded successfully";
+			response.Success = true;
+		}
+		catch (HttpRequestException ex)
+		{
+			// Handle exception related to the HTTP request
+			response.Data = false;
+			response.Message = $"An error occurred while downloading the image: {ex.Message}";
+			response.Success = false;
+		}
+		catch (IOException ex)
+		{
+			// Handle exception related to writing the file
+			response.Data = false;
+			response.Message = $"An error occurred while saving the image: {ex.Message}";
+			response.Success = false;
+		}
+		catch (Exception ex)
+		{
+			// Handle any other exceptions
+			response.Data = false;
+			response.Message = $"An error occurred: {ex.Message}";
+			response.Success = false;
+		}
+
+		return response;
+	}
+
+	private static async Task DownloadAndSaveCoverAsync(HttpClient client, string url, string fileName)
+	{
+		var response = await client.GetAsync(url);
+
+		if (response.IsSuccessStatusCode)
+		{
+			var imageBytes = await response.Content.ReadAsByteArrayAsync();
+			await File.WriteAllBytesAsync($"./Images/{fileName}", imageBytes);
+		}
 	}
 }
