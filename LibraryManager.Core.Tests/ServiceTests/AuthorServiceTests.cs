@@ -59,48 +59,61 @@ public class AuthorServiceTests
 	[Test]
 	public async Task InsertOrIgnoreAuthorAsync_ReturnsFailure_WhenValidationFails()
 	{
+		// Arrange
 		var author = new Author { Name = "Invalid Author" };
 		_mockAuthorValidator.Setup(x => x.Validate(author))
 			.Returns(new ValidationResult { IsValid = false });
 
+		// Act
 		var result = await _authorService.InsertOrIgnoreAuthorAsync(author);
 
+		// Assert
 		Assert.That(result.Success, Is.False);
 	}
 
 	[Test]
 	public async Task UpdateAuthorAsync_ReturnsFailure_WhenAuthorDoesNotExist()
 	{
+		
+		// Arrange
 		var author = new Author { Id = 1, Name = "Nonexistent Author" };
 		_mockAuthorValidator.Setup(x => x.Validate(author))
 			.Returns(new ValidationResult { IsValid = true });
 
+		// Act
 		var result = await _authorService.UpdateAuthorAsync(author);
 
+		// Assert
 		Assert.That(result.Success, Is.False);
 	}
 
 	[Test]
 	public async Task UpdateAuthorAsync_ReturnsFailure_WhenValidationFails()
 	{
+		// Arrange
 		var author = new Author { Id = 1, Name = "Invalid Author" };
 		_mockAuthorValidator.Setup(x => x.Validate(author))
 			.Returns(new ValidationResult { IsValid = false });
 
+		// Act
 		var result = await _authorService.UpdateAuthorAsync(author);
 
+		// Assert
 		Assert.That(result.Success, Is.False);
 	}
 		
 	[Test]
 	public async Task InsertOrIgnoreAuthorAsync_ReturnsSuccess_WhenAuthorIsValidAndDoesNotExist()
 	{
+		// Arrange
 		var author = new Author { Name = "Valid Author" };
 		_mockAuthorValidator.Setup(x => x.Validate(author))
 			.Returns(new ValidationResult { IsValid = true });
 
+		// Act
 		var result = await _authorService.InsertOrIgnoreAuthorAsync(author);
 
+		// Assert
 		Assert.That(result.Success, Is.True);
 	}
 
@@ -127,97 +140,123 @@ public class AuthorServiceTests
 	[Test]
 	public async Task InsertOrIgnoreAuthorAsync_ReturnsFailure_WhenAuthorExists()
 	{
+		// Arrange
 		var author = new Author { Name = "Existing Author" };
 		_mockAuthorValidator.Setup(x => x.Validate(author))
 			.Returns(new ValidationResult { IsValid = true });
 		await _authorService.InsertOrIgnoreAuthorAsync(author);
 
+		// Act
 		var result = await _authorService.InsertOrIgnoreAuthorAsync(author);
 
+		// Assert
 		Assert.That(result.Success, Is.False);
 	}
 
 	[Test]
 	public async Task InsertOrIgnoreAuthorAsync_ReturnsFailure_WhenAuthorIsNull()
 	{
+		// Arrange
 		Author author = null;
 		_mockAuthorValidator.Setup(x => x.Validate(author))
 			.Returns(new ValidationResult { IsValid = false });
 
+		// Act
 		var result = await _authorService.InsertOrIgnoreAuthorAsync(author);
 
+		// Assert
 		Assert.That(result.Success, Is.False);
 	}
 
 	[Test]
 	public async Task UpdateAuthorAsync_ReturnsFailure_WhenAuthorIsNull()
 	{
+		
+		// Arrange
 		Author author = null;
 		_mockAuthorValidator.Setup(x => x.Validate(author))
 			.Returns(new ValidationResult { IsValid = false });
 
+		// Act
 		var result = await _authorService.UpdateAuthorAsync(author);
 
+		// Assert
 		Assert.That(result.Success, Is.False);
 	}
 
 	[Test]
 	public async Task InsertOrIgnoreAuthorAsync_ReturnsFailure_WhenAuthorNameIsEmpty()
 	{
+		// Arrange
 		var author = new Author { Name = string.Empty };
 		_mockAuthorValidator.Setup(x => x.Validate(author))
 			.Returns(new ValidationResult { IsValid = false });
 
+		// Act
 		var result = await _authorService.InsertOrIgnoreAuthorAsync(author);
 
+		// Assert
 		Assert.That(result.Success, Is.False);
 	}
 
 	[Test]
 	public async Task UpdateAuthorAsync_ReturnsFailure_WhenAuthorNameIsEmpty()
 	{
+		
+		// Arrange
 		var author = new Author { Id = 1, Name = string.Empty };
 		_mockAuthorValidator.Setup(x => x.Validate(author))
 			.Returns(new ValidationResult { IsValid = false });
 
+		// Act
 		var result = await _authorService.UpdateAuthorAsync(author);
 
+		// Assert
 		Assert.That(result.Success, Is.False);
 	}
 		
 	[Test]
 	public async Task UpdateAuthorAsync_ReturnsFailure_WhenAuthorNameIsWhitespace()
 	{
+		// Arrange
 		var author = new Author { Id = 1, Name = " " };
 		_mockAuthorValidator.Setup(x => x.Validate(author))
 			.Returns(new ValidationResult { IsValid = false });
 
+		// Act
 		var result = await _authorService.UpdateAuthorAsync(author);
 
+		// Assert
 		Assert.That(result.Success, Is.False);
 	}
 
 	[Test]
 	public async Task InsertOrIgnoreAuthorAsync_ReturnsFailure_WhenAuthorNameIsWhitespace()
 	{
+		// Arrange
 		var author = new Author { Name = " " };
 		_mockAuthorValidator.Setup(x => x.Validate(author))
 			.Returns(new ValidationResult { IsValid = false });
 
+		// Act
 		var result = await _authorService.InsertOrIgnoreAuthorAsync(author);
 
+		// Assert
 		Assert.That(result.Success, Is.False);
 	}
 
 	[Test]
 	public async Task UpdateAuthorAsync_ReturnsFailure_WhenAuthorIdIsZero()
 	{
+		// Arrange
 		var author = new Author { Id = 0, Name = "Valid Name" };
 		_mockAuthorValidator.Setup(x => x.Validate(author))
 			.Returns(new ValidationResult { IsValid = false });
 
+		// Act
 		var result = await _authorService.UpdateAuthorAsync(author);
 
+		// Assert
 		Assert.That(result.Success, Is.False);
 	}
 }

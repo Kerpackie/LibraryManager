@@ -1,6 +1,5 @@
 ﻿using LibraryManager.Core.Models;
 using LibraryManager.Core.Validators.CoverValidator;
-using NUnit.Framework.Internal;
 
 namespace LibraryManager.Core.Tests.ValidatorTests;
 
@@ -29,7 +28,7 @@ public class CoverValidatorTests
 		var result = _validator.Validate(cover);
 
 		// Assert
-		Assert.IsTrue(result.IsValid);
+		Assert.That(result.IsValid, Is.True);
 	}
 
 	[Test]
@@ -42,7 +41,7 @@ public class CoverValidatorTests
 		var result = _validator.Validate(cover);
 
 		// Assert
-		Assert.IsFalse(result.IsValid);
+		Assert.That(result.IsValid, Is.False);
 	}
 
 	[Test]
@@ -59,7 +58,7 @@ public class CoverValidatorTests
 		var result = _validator.Validate(cover);
 
 		// Assert
-		Assert.IsFalse(result.IsValid);
+		Assert.That(result.IsValid, Is.False);
 	}
 	
 	[Test]
@@ -76,7 +75,7 @@ public class CoverValidatorTests
 		var result = _validator.Validate(cover);
 
 		// Assert
-		Assert.IsFalse(result.IsValid);
+		Assert.That(result.IsValid, Is.False);
 	}
 	
 	[Test]
@@ -93,7 +92,7 @@ public class CoverValidatorTests
 		var result = _validator.Validate(cover);
 
 		// Assert
-		Assert.IsFalse(result.IsValid);
+		Assert.That(result.IsValid, Is.False);
 	}
 	
 	[Test]
@@ -110,7 +109,7 @@ public class CoverValidatorTests
 		var result = _validator.Validate(cover);
 
 		// Assert
-		Assert.IsFalse(result.IsValid);
+		Assert.That(result.IsValid, Is.False);
 	}
 	
 	[Test]
@@ -127,7 +126,7 @@ public class CoverValidatorTests
 		var result = _validator.Validate(cover);
 
 		// Assert
-		Assert.IsFalse(result.IsValid);
+		Assert.That(result.IsValid, Is.False);
 	}
 	
 	[Test]
@@ -144,7 +143,7 @@ public class CoverValidatorTests
 		var result = _validator.Validate(cover);
 
 		// Assert
-		Assert.IsFalse(result.IsValid);
+		Assert.That(result.IsValid, Is.False);
 	}
 	
 	[Test]
@@ -161,7 +160,7 @@ public class CoverValidatorTests
 		var result = _validator.Validate(cover);
 
 		// Assert
-		Assert.IsFalse(result.IsValid);
+		Assert.That(result.IsValid, Is.False);
 	}
 	
 	[Test]
@@ -178,7 +177,7 @@ public class CoverValidatorTests
 		var result = _validator.Validate(cover);
 
 		// Assert
-		Assert.IsFalse(result.IsValid);
+		Assert.That(result.IsValid, Is.False);
 	}
 	
 	[Test]
@@ -195,7 +194,7 @@ public class CoverValidatorTests
 		var result = _validator.Validate(cover);
 
 		// Assert
-		Assert.IsFalse(result.IsValid);
+		Assert.That(result.IsValid, Is.False);
 	}
 	
 	[Test]
@@ -212,7 +211,7 @@ public class CoverValidatorTests
 		var result = _validator.Validate(cover);
 
 		// Assert
-		Assert.IsFalse(result.IsValid);
+		Assert.That(result.IsValid, Is.False);
 	}
 	
 	[Test]
@@ -229,7 +228,7 @@ public class CoverValidatorTests
 		var result = _validator.Validate(cover);
 
 		// Assert
-		Assert.IsFalse(result.IsValid);
+		Assert.That(result.IsValid, Is.False);
 	}
 	
 	[Test]
@@ -246,7 +245,7 @@ public class CoverValidatorTests
 		var result = _validator.Validate(cover);
 
 		// Assert
-		Assert.IsFalse(result.IsValid);
+		Assert.That(result.IsValid, Is.False);
 	}
 	
 }

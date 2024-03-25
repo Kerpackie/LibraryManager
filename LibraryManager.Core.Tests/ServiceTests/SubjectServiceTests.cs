@@ -24,30 +24,38 @@ public class SubjectServiceTests
 	[Test]
 	public async Task InsertOrIgnoreSubjectAsync_ReturnsSuccess_WhenSubjectIsValidAndDoesNotExist()
 	{
+		// Arrange
 		var subject = new Subject { Name = "Valid Subject" };
 		_mockSubjectValidator.Setup(x => x.Validate(subject))
 			.Returns(new ValidationResult { IsValid = true });
 
+		// Act
 		var result = await _subjectService.InsertOrIgnoreSubjectAsync(subject);
 
+		// Assert
 		Assert.That(result.Success, Is.True);
 	}
 
 	[Test]
 	public async Task InsertOrIgnoreSubjectAsync_ReturnsFailure_WhenSubjectIsInvalid()
 	{
+		// Arrange
 		var subject = new Subject { Name = "Invalid Subject" };
 		_mockSubjectValidator.Setup(x => x.Validate(subject))
 			.Returns(new ValidationResult { IsValid = false });
 
+		// Act
 		var result = await _subjectService.InsertOrIgnoreSubjectAsync(subject);
 
+		// Assert
 		Assert.That(result.Success, Is.False);
 	}
 
 	[Test]
 	public async Task InsertOrIgnoreSubjectAsync_ReturnsFailure_WhenSubjectIsValidAndExists()
 	{
+		
+		// Arrange
 		var subject = new Subject { Name = "Existing Subject" };
 		_mockSubjectValidator.Setup(x => x.Validate(subject))
 			.Returns(new ValidationResult { IsValid = true });
@@ -55,83 +63,116 @@ public class SubjectServiceTests
 		_context.Subjects.Add(subject);
 		await _context.SaveChangesAsync();
 
+		// Act
 		var result = await _subjectService.InsertOrIgnoreSubjectAsync(subject);
 
+		// Assert
 		Assert.That(result.Success, Is.False);
 	}
 
 	[Test]
 	public async Task InsertOrIgnoreSubjectAsync_ReturnsFailure_WhenSubjectIsNull()
 	{
+		// Arrange
 		Subject subject = null;
 		_mockSubjectValidator.Setup(x => x.Validate(subject))
 			.Returns(new ValidationResult { IsValid = false });
 
+		// Act
 		var result = await _subjectService.InsertOrIgnoreSubjectAsync(subject);
 
+		// Assert
 		Assert.That(result.Success, Is.False);
 	}
 	
 	[Test]
 	public async Task InsertOrIgnoreSubjectAsync_AddsSubject_WhenSubjectIsValidAndDoesNotExist()
-	{
-	    var subject = new Subject { Name = "New Subject" };
+    {
+	    
+	    // Arrange
+        var subject = new Subject { Name = "New Subject" };
 	    _mockSubjectValidator.Setup(x => x.Validate(subject))
 	        .Returns(new ValidationResult { IsValid = true });
 
+	    // Act
 	    var result = await _subjectService.InsertOrIgnoreSubjectAsync(subject);
+	    
+	    // Assert
+        Assert.Multiple(() =>
+        {
+            Assert.That(result.Success, Is.True);
+            Assert.That(result.Data, Is.Not.Null);
+        });
+        Assert.That(result.Data, Is.EqualTo(subject));
+    }
 
-	    Assert.That(result.Success, Is.True);
-	    Assert.That(result.Data, Is.Not.Null);
-	    Assert.That(result.Data, Is.EqualTo(subject));
-	}
-
-	[Test]
+    [Test]
 	public async Task InsertOrIgnoreSubjectAsync_DoesNotAddSubject_WhenSubjectIsInvalid()
-	{
-	    var subject = new Subject { Name = "Invalid Subject" };
+    {
+	    // Arrange
+        var subject = new Subject { Name = "Invalid Subject" };
 	    _mockSubjectValidator.Setup(x => x.Validate(subject))
 	        .Returns(new ValidationResult { IsValid = false });
 
+	    // Act
 	    var result = await _subjectService.InsertOrIgnoreSubjectAsync(subject);
+	    
+	    // Assert
+        Assert.Multiple(() =>
+        {
+            Assert.That(result.Success, Is.False);
+            Assert.That(result.Data, Is.Null);
+        });
+    }
 
-	    Assert.That(result.Success, Is.False);
-	    Assert.That(result.Data, Is.Null);
-	}
-
-	[Test]
+    [Test]
 	public async Task InsertOrIgnoreSubjectAsync_DoesNotAddSubject_WhenSubjectIsValidAndExists()
-	{
-	    var subject = new Subject { Name = "Existing Subject" };
+    {
+	    
+	    // Arrange
+        var subject = new Subject { Name = "Existing Subject" };
 	    _mockSubjectValidator.Setup(x => x.Validate(It.IsAny<Subject>()))
 		    .Returns(new ValidationResult { IsValid = true });
 
 	    _context.Subjects.Add(subject);
 	    await _context.SaveChangesAsync();
 
+	    // Act
 	    var result = await _subjectService.InsertOrIgnoreSubjectAsync(new Subject { Name = "Existing Subject" });
+        
+	    // Assert
+	    Assert.Multiple(() =>
+        {
+            Assert.That(result.Success, Is.False);
+            Assert.That(result.Data, Is.EqualTo(subject));
+        });
+    }
 
-	    Assert.That(result.Success, Is.False);
-	    Assert.That(result.Data, Is.EqualTo(subject));
-	}
-
-	[Test]
+    [Test]
 	public async Task InsertOrIgnoreSubjectAsync_DoesNotAddSubject_WhenSubjectIsNull()
-	{
-	    Subject subject = null;
+    {
+	    // Arrange
+	    
+        Subject subject = null;
 	    _mockSubjectValidator.Setup(x => x.Validate(subject))
 	        .Returns(new ValidationResult { IsValid = false });
 
+	    // Act
 	    var result = await _subjectService.InsertOrIgnoreSubjectAsync(subject);
+	    
+	    // Assert
+        Assert.Multiple(() =>
+        {
+            Assert.That(result.Success, Is.False);
+            Assert.That(result.Data, Is.Null);
+        });
+    }
 
-	    Assert.That(result.Success, Is.False);
-	    Assert.That(result.Data, Is.Null);
-	}
-	
-	[Test]
+    [Test]
 	public async Task InsertOrIgnoreSubjectAsync_AddsMultipleSubjects_WhenAllSubjectsAreValidAndDoNotExist()
-	{
-	    var subjects = new List<Subject>
+    {
+	    // Arrange
+        var subjects = new List<Subject>
 	    {
 	        new Subject { Name = "New Subject 1" },
 	        new Subject { Name = "New Subject 2" },
@@ -143,17 +184,23 @@ public class SubjectServiceTests
 	        _mockSubjectValidator.Setup(x => x.Validate(subject))
 	            .Returns(new ValidationResult { IsValid = true });
 	    }
-
+	    
+	    // Act
 	    var result = await _subjectService.InsertOrIgnoreSubjectsAsync(subjects);
+	    
+	    // Assert
+        Assert.Multiple(() =>
+        {
+            Assert.That(result.Success, Is.True);
+            Assert.That(result.Data, Is.EquivalentTo(subjects));
+        });
+    }
 
-	    Assert.That(result.Success, Is.True);
-	    Assert.That(result.Data, Is.EquivalentTo(subjects));
-	}
-
-	[Test]
+    [Test]
 	public async Task InsertOrIgnoreSubjectAsync_AddsValidSubjectsAndReturnsErrors_WhenSomeSubjectsAreInvalid()
-	{
-	    var validSubject = new Subject { Name = "Valid Subject" };
+    {
+	    // Arrange
+        var validSubject = new Subject { Name = "Valid Subject" };
 	    var invalidSubject = new Subject { Name = "Invalid Subject" };
 	    var subjects = new List<Subject> { validSubject, invalidSubject };
 
@@ -162,16 +209,23 @@ public class SubjectServiceTests
 	    _mockSubjectValidator.Setup(x => x.Validate(invalidSubject))
 	        .Returns(new ValidationResult { IsValid = false, Errors = {"Invalid Subject"}});
 
+	    // Act
 	    var result = await _subjectService.InsertOrIgnoreSubjectsAsync(subjects);
+        
+	    // Assert
+	    Assert.Multiple(() =>
+        {
+            Assert.That(result.Success, Is.False);
+            Assert.That(result.Data, Is.EquivalentTo(new List<Subject> { validSubject }));
+        });
+    }
 
-	    Assert.That(result.Success, Is.False);
-	    Assert.That(result.Data, Is.EquivalentTo(new List<Subject> { validSubject }));
-	}
-
-	[Test]
+    [Test]
 	public async Task InsertOrIgnoreSubjectAsync_ReturnsFailure_WhenAllSubjectsAreInvalid()
-	{
-	    var subjects = new List<Subject>
+    {
+	    // Arrange
+	    
+        var subjects = new List<Subject>
 	    {
 	        new Subject { Name = "Invalid Subject 1" },
 	        new Subject { Name = "Invalid Subject 2" },
@@ -183,10 +237,16 @@ public class SubjectServiceTests
 	        _mockSubjectValidator.Setup(x => x.Validate(subject))
 	            .Returns(new ValidationResult { IsValid = false, Errors = {"Error: Invalid"}});
 	    }
+	    
+	    // Act
 
 	    var result = await _subjectService.InsertOrIgnoreSubjectsAsync(subjects);
-
-	    Assert.That(result.Success, Is.False);
-	    Assert.That(result.Data, Is.Empty);
-	}
+        
+	    // Assert
+	    Assert.Multiple(() =>
+        {
+            Assert.That(result.Success, Is.False);
+            Assert.That(result.Data, Is.Empty);
+        });
+    }
 }
