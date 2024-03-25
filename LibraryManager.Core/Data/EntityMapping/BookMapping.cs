@@ -51,5 +51,21 @@ public class BookMapping : IEntityTypeConfiguration<Book>
 
                     j.ToTable("BookSubjects");
                 });
+        
+        builder
+            .HasMany(d => d.Collections)
+            .WithMany(p => p.Books)
+            .UsingEntity<Dictionary<string, object>>(
+                "BookCollection",
+                l => l.HasOne<Collection>().WithMany().HasForeignKey("CollectionId").OnDelete(DeleteBehavior.ClientSetNull),
+                r => r.HasOne<Book>().WithMany().HasForeignKey("BookId").OnDelete(DeleteBehavior.ClientSetNull),
+                j =>
+                {
+                    j.HasKey("BookId", "CollectionId");
+
+                    j.ToTable("BookCollections");
+
+                    j.HasIndex(new[] { "CollectionId" }, "IX_BookCollections_CollectionId");
+                });
     }
 }
