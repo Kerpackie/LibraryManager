@@ -59,6 +59,13 @@ public class NoteService : INoteService
                 return serviceResponse;
             }
 
+            if (!book.Notes.Any())
+            {
+                serviceResponse.Success = false;
+                serviceResponse.Message = "No notes found for this book";
+                return serviceResponse;
+            }
+
             serviceResponse.Data = book.Notes;
             serviceResponse.Message = "Notes retrieved successfully";
         }
@@ -81,7 +88,7 @@ public class NoteService : INoteService
             if (existingNote == null)
             {
                 serviceResponse.Success = false;
-                serviceResponse.Message = "Note not found";
+                serviceResponse.Message = "Not found";
                 return serviceResponse;
             }
 
@@ -110,7 +117,7 @@ public class NoteService : INoteService
             if (note == null)
             {
                 serviceResponse.Success = false;
-                serviceResponse.Message = "Note not found";
+                serviceResponse.Message = "Not found";
                 return serviceResponse;
             }
 
