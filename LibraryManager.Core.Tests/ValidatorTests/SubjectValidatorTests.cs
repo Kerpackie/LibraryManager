@@ -1,9 +1,9 @@
 ﻿using LibraryManager.Core.Models;
 using LibraryManager.Core.Validators.SubjectValidator;
-using NUnit.Framework;
 
 namespace LibraryManager.Core.Tests.ValidatorTests;
 
+[TestFixture]
 public class SubjectValidatorTests
 {
 	private ISubjectValidator _validator;
@@ -15,7 +15,7 @@ public class SubjectValidatorTests
 	}
 	
 	[Test]
-	public void Validate_RetusnIsValidFalse_WhenSubjectIsNull()
+	public void Validate_ReturnsIsValidFalse_WhenSubjectIsNull()
 	{
 		var result = _validator.Validate(null);
 

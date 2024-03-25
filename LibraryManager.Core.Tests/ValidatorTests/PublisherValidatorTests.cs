@@ -3,6 +3,7 @@ using LibraryManager.Core.Validators.PublisherValidator;
 
 namespace LibraryManager.Core.Tests.ValidatorTests;
 
+[TestFixture]
 public class PublisherValidatorTests
 {
 	private IPublisherValidator _validator;

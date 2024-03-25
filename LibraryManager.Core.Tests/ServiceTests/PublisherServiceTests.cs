@@ -1,9 +1,7 @@
 ﻿using LibraryManager.Core.Data;
 using LibraryManager.Core.Models;
-using LibraryManager.Core.Services.AuthorService;
 using LibraryManager.Core.Services.PublisherService;
 using LibraryManager.Core.Validators;
-using LibraryManager.Core.Validators.AuthorValidator;
 using LibraryManager.Core.Validators.PublisherValidator;
 
 namespace LibraryManager.Core.Tests.ServiceTests;
