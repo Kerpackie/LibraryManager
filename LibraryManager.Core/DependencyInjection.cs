@@ -3,6 +3,7 @@ using LibraryManager.Core.Services.AuthorService;
 using LibraryManager.Core.Services.BookAPIService;
 using LibraryManager.Core.Services.BookService;
 using LibraryManager.Core.Services.CoverService;
+using LibraryManager.Core.Services.NotesService;
 using LibraryManager.Core.Services.PublisherService;
 using LibraryManager.Core.Services.SubjectService;
 using LibraryManager.Core.Validators.AuthorValidator;
@@ -24,6 +25,7 @@ public static class DependencyInjection
 		services.AddScoped<ICoverService, CoverService>();
 		services.AddScoped<IPublisherService, PublisherService>();
 		services.AddScoped<ISubjectService, SubjectService>();
+		services.AddScoped<INoteService, NoteService>();
 
 		services.AddScoped<IAuthorValidator, AuthorValidator>();
 		services.AddScoped<IPublisherValidator, PublisherValidator>();
