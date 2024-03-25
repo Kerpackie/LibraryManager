@@ -1,32 +1,35 @@
 ﻿using LibraryManager.Core.Models;
+using LibraryManager.Core.Validators.SubjectValidator;
 
 namespace LibraryManager.Core.Validators.PublisherValidator;
 
-public class PublisherValidator : IPublisherValidator
+public class PublisherValidator : BaseValidator<Publisher>, IPublisherValidator
 {
-	public virtual ValidationResult Validate(Publisher publisher)
+	protected override ValidationResult ValidateEntity(Publisher publisher)
 	{
-		var result = new ValidationResult { IsValid = true };
-
-		if (publisher == null)
-		{
-			result.IsValid = false;
-			result.Errors.Add("Publisher is null");
-			return result;
-		}
-
+		var validationResult = new ValidationResult { IsValid = true };
+		
+		if(!validationResult.IsValid)
+			return validationResult;
+		
 		if (string.IsNullOrWhiteSpace(publisher.Name))
 		{
-			result.IsValid = false;
-			result.Errors.Add("Author name is null or empty");
+			validationResult.IsValid = false;
+			validationResult.Errors.Add("Subject name cannot be null or empty");
+		}
+
+		if (string.IsNullOrEmpty(publisher.Name))
+		{
+			validationResult.IsValid = false;
+			validationResult.Errors.Add("Subject name cannot be null or empty");
 		}
 		
 		if (publisher.Name is {Length: > 100})
 		{
-			result.IsValid = false;
-			result.Errors.Add("Publisher name is too long");
+			validationResult.IsValid = false;
+			validationResult.Errors.Add("Publisher name is too long");
 		}
 
-		return result;
+		return validationResult;
 	}
 }

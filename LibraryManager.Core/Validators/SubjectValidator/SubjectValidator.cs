@@ -2,31 +2,33 @@
 
 namespace LibraryManager.Core.Validators.SubjectValidator;
 
-public class SubjectValidator : ISubjectValidator
+public class SubjectValidator : BaseValidator<Subject>, ISubjectValidator
 {
-	public ValidationResult Validate(Subject subject)
+	protected override ValidationResult ValidateEntity(Subject subject)
 	{
-		var result = new ValidationResult { IsValid = true };
-
-		if (subject == null)
-		{
-			result.IsValid = false;
-			result.Errors.Add("Subject is null");
-			return result;
-		}
-
+		var validationResult = new ValidationResult { IsValid = true };
+		
+		if(!validationResult.IsValid)
+			return validationResult;
+		
 		if (string.IsNullOrWhiteSpace(subject.Name))
 		{
-			result.IsValid = false;
-			result.Errors.Add("Subject name is null or empty");
+			validationResult.IsValid = false;
+			validationResult.Errors.Add("Subject name cannot be null or empty");
 		}
 
+		if (string.IsNullOrEmpty(subject.Name))
+		{
+			validationResult.IsValid = false;
+			validationResult.Errors.Add("Subject name cannot be null or empty");
+		}
+		
 		if (subject.Name is {Length: > 100})
 		{
-			result.IsValid = false;
-			result.Errors.Add("Subject name is too long");
+			validationResult.IsValid = false;
+			validationResult.Errors.Add("Publisher name is too long");
 		}
 
-		return result;
+		return validationResult;
 	}
 }

@@ -2,25 +2,31 @@
 
 namespace LibraryManager.Core.Validators.AuthorValidator;
 
-public class AuthorValidator : IAuthorValidator
+public class AuthorValidator : BaseValidator<Author>, IAuthorValidator
 {
-	public virtual ValidationResult Validate(Author author)
-	{
-		var result = new ValidationResult { IsValid = true };
 
-		if (author == null)
-		{
-			result.IsValid = false;
-			result.Errors.Add("Author is null");
-			return result;
-		}
+	protected override ValidationResult ValidateEntity(Author author)
+	{
+		var validationResult = new ValidationResult { IsValid = true };
 
 		if (string.IsNullOrWhiteSpace(author.Name))
 		{
-			result.IsValid = false;
-			result.Errors.Add("Author name is null or empty");
+			validationResult.IsValid = false;
+			validationResult.Errors.Add("Author name cannot be null or empty");
 		}
 
-		return result;
+		if (string.IsNullOrEmpty(author.Name))
+		{
+			validationResult.IsValid = false;
+			validationResult.Errors.Add("Author name cannot be null or empty");
+		}
+
+		if (author.Name is {Length: > 100})
+		{
+			validationResult.IsValid = false;
+			validationResult.Errors.Add("Author name is too long");
+		}
+
+		return validationResult;
 	}
 }
