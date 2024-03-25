@@ -1,6 +1,14 @@
 ﻿using LibraryManager.Core.Data;
+using LibraryManager.Core.Services.AuthorService;
+using LibraryManager.Core.Services.BookAPIService;
 using LibraryManager.Core.Services.BookService;
-using LibraryManager.Core.Services.OpenLibraryAPIService;
+using LibraryManager.Core.Services.CoverService;
+using LibraryManager.Core.Services.PublisherService;
+using LibraryManager.Core.Services.SubjectService;
+using LibraryManager.Core.Validators.AuthorValidator;
+using LibraryManager.Core.Validators.CoverValidator;
+using LibraryManager.Core.Validators.PublisherValidator;
+using LibraryManager.Core.Validators.SubjectValidator;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Refit;
@@ -12,6 +20,15 @@ public static class DependencyInjection
 	public static IServiceCollection AddLibraryManagerCore(this IServiceCollection services)
 	{
 		services.AddScoped<IBookService, BookService>();
+		services.AddScoped<IAuthorService, AuthorService>();
+		services.AddScoped<ICoverService, CoverService>();
+		services.AddScoped<IPublisherService, PublisherService>();
+		services.AddScoped<ISubjectService, SubjectService>();
+
+		services.AddScoped<IAuthorValidator, AuthorValidator>();
+		services.AddScoped<IPublisherValidator, PublisherValidator>();
+		services.AddScoped<ISubjectValidator, SubjectValidator>();
+		services.AddScoped<ICoverValidator, CoverValidator>();
 		return services;
 	}
 	
@@ -41,6 +58,11 @@ public static class DependencyInjection
 	{
 		services.AddRefitClient<IOpenLibraryApiService>()
 			.ConfigureHttpClient(c => c.BaseAddress = new Uri("https://openlibrary.org"));
+
+		// Declare IBookApiService down here to allow the user to change the implementation of the service
+		// To use a different API service if they like, simulating a plugin system.
+		services.AddScoped<IBookApiService, OpenLibraryBookApiService>();
+		
 		return services;
 	}
 }

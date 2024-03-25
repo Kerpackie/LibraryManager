@@ -1,12 +1,20 @@
-using System.Text.Json.Serialization;
-
-namespace LibraryManager.Core.Models;
-
-public class Subject
+﻿namespace LibraryManager.Core.Models
 {
-	[JsonIgnore]
-	public int Id { get; set; }
-	public string? Name { get; set; }
-	[JsonIgnore]
-	public ICollection<BookSubject>? BookSubjects { get; set; }
+    public class Subject
+    {
+        public Subject()
+        {
+            Books = new HashSet<Book>();
+        }
+
+        public int Id { get; set; }
+        public string Name { get; set; } = null!;
+
+        public virtual ICollection<Book> Books { get; set; }
+        
+        public void Trim()
+        {
+            Name = Name.Trim();
+        }
+    }
 }

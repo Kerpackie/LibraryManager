@@ -10,21 +10,46 @@ public class BookMapping : IEntityTypeConfiguration<Book>
     public void Configure(EntityTypeBuilder<Book> builder)
     {
         builder
-            .HasOne(b => b.Cover)
-            .WithMany()
-            .HasForeignKey(b => b.CoverId);
-        
+            .HasIndex(e => e.Isbn, "IX_Books_ISBN")
+            .IsUnique();
+
         builder
-            .Property(book => book.Title)
-            .HasColumnType("varchar")
-            .HasMaxLength(128)
-            .IsRequired();
-        
-        /*builder.Property(book => book.PublicationYear)
-            .HasColumnType("char(4)")
-            .HasConversion(new DateTimeToChar4Converter());
-            */
-        
-        
+            .Property(e => e.Isbn).HasColumnName("ISBN");
+
+        builder
+            .HasOne(d => d.Author)
+            .WithMany(p => p.Books)
+            .HasForeignKey(d => d.AuthorId);
+
+        builder
+            .HasOne(d => d.Cover)
+            .WithMany(p => p.Books)
+            .HasForeignKey(d => d.CoverId)
+            .OnDelete(DeleteBehavior.ClientSetNull);
+
+        builder
+            .HasOne(d => d.Publisher)
+            .WithMany(p => p.Books)
+            .HasForeignKey(d => d.PublisherId);
+
+        builder
+            .HasMany(d => d.Subjects)
+            .WithMany(p => p.Books)
+            .UsingEntity<Dictionary<string, object>>(
+                "BookSubject",
+                l => l.HasOne<Subject>()
+                    .WithMany()
+                    .HasForeignKey("SubjectId")
+                    .OnDelete(DeleteBehavior.ClientSetNull),
+                r => r.HasOne<Book>()
+                    .WithMany()
+                    .HasForeignKey("BookId")
+                    .OnDelete(DeleteBehavior.ClientSetNull),
+        j =>
+                {
+                    j.HasKey("BookId", "SubjectId");
+
+                    j.ToTable("BookSubjects");
+                });
     }
 }

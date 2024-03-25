@@ -1,0 +1,30 @@
+name: LibraryManagerCoreTest
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 6.0.x
+
+    - name: Restore Core library dependencies
+      run: dotnet restore ./LibraryManager.Core/LibraryManager.Core.csproj
+
+    - name: Restore Test project dependencies
+      run: dotnet restore ./LibraryManager.Core.Tests/LibraryManager.Core.Tests.csproj
+
+    - name: Test
+      run: dotnet test --no-restore --verbosity normal
+      working-directory: ./LibraryManager.Core.Tests
