@@ -21,10 +21,12 @@ namespace LibraryManager.Core.Models
         public virtual Publisher? Publisher { get; set; }
 
         public virtual ICollection<Subject> Subjects { get; set; }
-        
+        public virtual ICollection<Note> Notes { get; set; }
+
         public Book()
         {
             Subjects = new HashSet<Subject>();
+            Notes = new HashSet<Note>();
         }
 
         public Book(OpenLibraryResponse openLibraryResponse)

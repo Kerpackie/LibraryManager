@@ -14,8 +14,9 @@ public class LibraryContext : DbContext
 		_dbConnectionConfig = dbConnectionConfig;
 	}
 	
-	public virtual DbSet<Author?> Authors { get; set; } = null!;
+	public virtual DbSet<Author> Authors { get; set; } = null!;
 	public virtual DbSet<Book> Books { get; set; } = null!;
+	public virtual DbSet<Note> Notes { get; set; } = null!;
 	public virtual DbSet<Cover> Covers { get; set; } = null!;
 	public virtual DbSet<Publisher> Publishers { get; set; } = null!;
 	public virtual DbSet<Subject> Subjects { get; set; } = null!;
