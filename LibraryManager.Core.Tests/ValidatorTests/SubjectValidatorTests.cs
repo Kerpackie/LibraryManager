@@ -13,6 +13,14 @@ public class SubjectValidatorTests
 	{
 		_validator = new SubjectValidator();
 	}
+	
+	[Test]
+	public void Validate_RetusnIsValidFalse_WhenSubjectIsNull()
+	{
+		var result = _validator.Validate(null);
+
+		Assert.That(result.IsValid, Is.False);
+	}
 
 	[Test]
 	public void Validate_ReturnsIsValidTrue_WhenNameIsValid()

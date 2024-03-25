@@ -52,4 +52,24 @@ public class PublisherValidatorTests
 
 		Assert.That(result.IsValid, Is.False);
 	}
+	
+	[Test]
+	public void Validate_ReturnsIsValidFalse_WhenNameIsTooLong()
+	{
+		var publisher = new Publisher { Name = new string('a', 101) };
+
+		var result = _validator.Validate(publisher);
+
+		Assert.That(result.IsValid, Is.False);
+	}
+	
+	[Test]
+	public void Validate_ReturnsIsValidFalse_WhenPublisherIsNull()
+	{
+		Publisher publisher = null;
+
+		var result = _validator.Validate(publisher);
+
+		Assert.That(result.IsValid, Is.False);
+	}
 }

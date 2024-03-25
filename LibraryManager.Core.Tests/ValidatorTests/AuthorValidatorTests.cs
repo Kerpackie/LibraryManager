@@ -54,5 +54,16 @@ namespace LibraryManager.Core.Tests.ValidatorTests
 
 			Assert.That(result.IsValid, Is.False);
 		}
+		
+		[Test]
+		public void Validate_ReturnsIsValidFalse_WhenNameIsTooLong()
+		{
+			var author = new Author { Name = new string('a', 101) };
+
+			var result = _validator.Validate(author);
+
+			Assert.That(result.IsValid, Is.False);
+		}
+		
 	}
 }
