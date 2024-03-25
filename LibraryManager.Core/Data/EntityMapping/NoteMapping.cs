@@ -8,8 +8,12 @@ public class NoteMapping : IEntityTypeConfiguration<Note>
 {
 	public void Configure(EntityTypeBuilder<Note> builder)
 	{
-		builder.HasOne(n => n.Book)
-			.WithMany(b => b.Notes)
-			.HasForeignKey(n => n.BookId);
+		builder
+			.HasIndex(e => e.BookId, "IX_Notes_BookId");
+
+		builder
+			.HasOne(d => d.Book)
+			.WithMany(p => p.Notes)
+			.HasForeignKey(d => d.BookId);
 	}
 }
