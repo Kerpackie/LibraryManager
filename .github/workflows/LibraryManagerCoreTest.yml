@@ -9,12 +9,12 @@ on:
 jobs:
   build:
 
-    runs-on: ubuntu-latest 
+    runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v2
 
-    - name: Setup .NET
+    - name: Setup .NET Core
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: 6.0.x
@@ -23,4 +23,5 @@ jobs:
       run: dotnet restore
 
     - name: Test
-      run: dotnet test LibraryManager.Core.Tests --no-restore --verbosity normal
+      run: dotnet test --no-restore --verbosity normal
+      working-directory: ./LibraryManager.Core.Tests  # Running tests only in the LibraryManager.Core.Tests project directory
