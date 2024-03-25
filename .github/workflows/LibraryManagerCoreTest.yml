@@ -9,7 +9,7 @@ on:
 jobs:
   build:
 
-    runs-on: ubuntu-latest 
+    runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v2
@@ -19,9 +19,11 @@ jobs:
       with:
         dotnet-version: 6.0.x
 
-    - name: Install dependencies
-      run: dotnet restore ./LibraryManager.Core/LibraryManager.Core.csproj ./LibraryManager.Core.Tests/LibraryManager.Core.Tests.csproj
+    - name: Restore Core library dependencies
+      run: dotnet restore ./LibraryManager.Core/LibraryManager.Core.csproj
 
+    - name: Restore Test project dependencies
+      run: dotnet restore ./LibraryManager.Core.Tests/LibraryManager.Core.Tests.csproj
 
     - name: Test
       run: dotnet test --no-restore --verbosity normal
