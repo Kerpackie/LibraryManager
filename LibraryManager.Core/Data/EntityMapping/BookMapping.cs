@@ -14,7 +14,8 @@ public class BookMapping : IEntityTypeConfiguration<Book>
             .IsUnique();
 
         builder
-            .Property(e => e.Isbn).HasColumnName("ISBN");
+            .Property(e => e.Isbn)
+            .HasColumnName("ISBN");
 
         builder
             .HasOne(d => d.Author)
@@ -37,11 +38,13 @@ public class BookMapping : IEntityTypeConfiguration<Book>
             .WithMany(p => p.Books)
             .UsingEntity<Dictionary<string, object>>(
                 "BookSubject",
-                l => l.HasOne<Subject>()
+                l => l
+                    .HasOne<Subject>()
                     .WithMany()
                     .HasForeignKey("SubjectId")
                     .OnDelete(DeleteBehavior.ClientSetNull),
-                r => r.HasOne<Book>()
+                r => r
+                    .HasOne<Book>()
                     .WithMany()
                     .HasForeignKey("BookId")
                     .OnDelete(DeleteBehavior.ClientSetNull),
@@ -57,8 +60,16 @@ public class BookMapping : IEntityTypeConfiguration<Book>
             .WithMany(p => p.Books)
             .UsingEntity<Dictionary<string, object>>(
                 "BookCollection",
-                l => l.HasOne<Collection>().WithMany().HasForeignKey("CollectionId").OnDelete(DeleteBehavior.ClientSetNull),
-                r => r.HasOne<Book>().WithMany().HasForeignKey("BookId").OnDelete(DeleteBehavior.ClientSetNull),
+                l => l
+                    .HasOne<Collection>()
+                    .WithMany()
+                    .HasForeignKey("CollectionId")
+                    .OnDelete(DeleteBehavior.ClientSetNull),
+                r => r
+                    .HasOne<Book>()
+                    .WithMany()
+                    .HasForeignKey("BookId")
+                    .OnDelete(DeleteBehavior.ClientSetNull),
                 j =>
                 {
                     j.HasKey("BookId", "CollectionId");
@@ -66,6 +77,30 @@ public class BookMapping : IEntityTypeConfiguration<Book>
                     j.ToTable("BookCollections");
 
                     j.HasIndex(new[] { "CollectionId" }, "IX_BookCollections_CollectionId");
+                });
+        
+        builder
+            .HasMany(d => d.Loans)
+            .WithMany(p => p.Books)
+            .UsingEntity<Dictionary<string, object>>(
+                "BookLoan",
+                l => l
+                    .HasOne<Loan>()
+                    .WithMany()
+                    .HasForeignKey("LoanId")
+                    .OnDelete(DeleteBehavior.ClientSetNull),
+                r => r
+                    .HasOne<Book>()
+                    .WithMany()
+                    .HasForeignKey("BookId")
+                    .OnDelete(DeleteBehavior.ClientSetNull),
+                j =>
+                {
+                    j.HasKey("BookId", "LoanId");
+
+                    j.ToTable("BookLoans");
+
+                    j.HasIndex(new[] { "LoanId" }, "IX_BookLoans_LoanId");
                 });
     }
 }

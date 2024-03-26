@@ -22,36 +22,43 @@ public class LibraryContext : DbContext
 	public virtual DbSet<Publisher> Publishers { get; set; } = null!;
 	public virtual DbSet<Subject> Subjects { get; set; } = null!;
 	public virtual DbSet<Collection> Collections { get; set; } = null!;
+	public virtual DbSet<Loan> Loans { get; set; } = null!;
 	
 	protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 	{
-		if (_dbConnectionConfig.ProviderName == "SQLite")
+		switch (_dbConnectionConfig.ProviderName)
 		{
-			var connectionStringBuilder = new SQLiteConnectionStringBuilder(_dbConnectionConfig.ConnectionString);
-
-			// Set databaseFilePath to currentWorkingDirectory/database.db
-			var databaseFilePath = $"{Directory.GetCurrentDirectory()}/{connectionStringBuilder.DataSource}";
-				
-			// Check if the directory of the database file exists, if not, create it
-			var databaseDirectory = Path.GetDirectoryName(databaseFilePath);
-			if (!string.IsNullOrEmpty(databaseDirectory) && !Directory.Exists(databaseDirectory))
+			case "SQLite":
 			{
-				Directory.CreateDirectory(databaseDirectory);
-			}
+				var connectionStringBuilder = new SQLiteConnectionStringBuilder(_dbConnectionConfig.ConnectionString);
 
-			optionsBuilder.UseSqlite(_dbConnectionConfig.ConnectionString);
-		}
-		else if (_dbConnectionConfig.ProviderName == "SqlServer")
-		{
-			optionsBuilder.UseSqlServer(_dbConnectionConfig.ConnectionString);
-		}
-		else if (_dbConnectionConfig.ProviderName == "Test")
-		{
-			optionsBuilder.UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString());
-		}
-		else
-		{
-			throw new Exception("Unsupported database provider");
+				// Set databaseFilePath to currentWorkingDirectory/database.db
+				var databaseFilePath = $"{Directory.GetCurrentDirectory()}/{connectionStringBuilder.DataSource}";
+				
+				// Check if the directory of the database file exists, if not, create it
+				var databaseDirectory = Path.GetDirectoryName(databaseFilePath);
+				if (!string.IsNullOrEmpty(databaseDirectory) && !Directory.Exists(databaseDirectory))
+				{
+					Directory.CreateDirectory(databaseDirectory);
+				}
+
+				optionsBuilder.UseSqlite(_dbConnectionConfig.ConnectionString);
+				break;
+			}
+			case "SqlServer":
+				optionsBuilder.UseSqlServer(_dbConnectionConfig.ConnectionString);
+				break;
+			case "Test":
+				optionsBuilder.UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString());
+				break;
+			case "SQLiteInMemory":
+				optionsBuilder.UseSqlite("DataSource=:memory:");
+				break;
+			case "SQLiteTest":
+				optionsBuilder.UseSqlite(_dbConnectionConfig.ConnectionString);
+				break;
+			default:
+				throw new Exception("Unsupported database provider");
 		}
 
 		base.OnConfiguring(optionsBuilder);
