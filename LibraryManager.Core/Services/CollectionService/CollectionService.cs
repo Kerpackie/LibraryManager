@@ -165,6 +165,13 @@ public class CollectionService : ICollectionService
 				serviceResponse.Message = "Collection not found";
 				return serviceResponse;
 			}
+			
+			if (collection.Name == "Wishlist")
+			{
+				serviceResponse.Success = false;
+				serviceResponse.Message = "Cannot delete the Wishlist collection";
+				return serviceResponse;
+			}
 
 			_context.Collections.Remove(collection);
 			await _context.SaveChangesAsync();
@@ -192,6 +199,13 @@ public class CollectionService : ICollectionService
 			{
 				serviceResponse.Success = false;
 				serviceResponse.Message = "Collection not found";
+				return serviceResponse;
+			}
+
+			if (collection.Name == "Wishlist")
+			{
+				serviceResponse.Success = false;
+				serviceResponse.Message = "Cannot delete the Wishlist collection";
 				return serviceResponse;
 			}
 
