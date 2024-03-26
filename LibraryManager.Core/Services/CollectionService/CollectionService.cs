@@ -15,13 +15,13 @@ public class CollectionService : ICollectionService
 		_context = context;
 	}
 
-	public async Task<ServiceResponse<Collection>> CreateCollection(Collection newCollection)
+	public async Task<ServiceResponse<Collection>> CreateCollectionAsync(Collection newCollection)
 	{
 		var serviceResponse = new ServiceResponse<Collection>();
 
 		try
 		{
-			var collection = await _context.Collections.FindAsync(newCollection.Name);
+			var collection = await _context.Collections.FirstOrDefaultAsync(c => c.Name == newCollection.Name);
 				
 			if (collection != null)
 			{
@@ -45,7 +45,7 @@ public class CollectionService : ICollectionService
 		return serviceResponse;
 	}
 
-	public async Task<ServiceResponse<Collection>> GetCollection(int id)
+	public async Task<ServiceResponse<Collection>> GetCollectionAsync(int id)
 	{
 		var serviceResponse = new ServiceResponse<Collection>();
 
@@ -73,7 +73,7 @@ public class CollectionService : ICollectionService
 		return serviceResponse;
 	}
 
-	public async Task<ServiceResponse<Collection>> GetCollection(string name)
+	public async Task<ServiceResponse<Collection>> GetCollectionByNameAsync(string name)
 	{
 		var serviceResponse = new ServiceResponse<Collection>();
 
@@ -101,13 +101,20 @@ public class CollectionService : ICollectionService
 		return serviceResponse;
 	}
 
-	public async Task<ServiceResponse<IEnumerable<Collection>>> GetAllCollections()
+	public async Task<ServiceResponse<IEnumerable<Collection>>> GetAllCollectionsAsync()
 	{
 		var serviceResponse = new ServiceResponse<IEnumerable<Collection>>();
 
 		try
 		{
 			var collections = await _context.Collections.ToListAsync();
+
+			if (collections.Count == 0)
+			{
+				serviceResponse.Success = false;
+				serviceResponse.Message = "No collections found";
+				return serviceResponse;
+			}
 
 			serviceResponse.Data = collections;
 			serviceResponse.Message = "Collections retrieved successfully";
@@ -121,7 +128,7 @@ public class CollectionService : ICollectionService
 		return serviceResponse;
 	}
 
-	public async Task<ServiceResponse<Collection>> UpdateCollection(Collection updatedCollection)
+	public async Task<ServiceResponse<Collection>> UpdateCollectionAsync(Collection updatedCollection)
 	{
 		var serviceResponse = new ServiceResponse<Collection>();
 
@@ -133,6 +140,15 @@ public class CollectionService : ICollectionService
 			{
 				serviceResponse.Success = false;
 				serviceResponse.Message = "Collection not found";
+				return serviceResponse;
+			}
+			
+			var collectionWithSameName = await _context.Collections.FirstOrDefaultAsync(c => c.Name == updatedCollection.Name);
+
+			if (collectionWithSameName != null && collectionWithSameName.Id != updatedCollection.Id)
+			{
+				serviceResponse.Success = false;
+				serviceResponse.Message = "Collection with the same name already exists";
 				return serviceResponse;
 			}
 
@@ -151,7 +167,7 @@ public class CollectionService : ICollectionService
 		return serviceResponse;
 	}
 
-	public async Task<ServiceResponse<bool>> DeleteCollection(int id)
+	public async Task<ServiceResponse<bool>> DeleteCollectionAsync(int id)
 	{
 		var serviceResponse = new ServiceResponse<bool>();
 
@@ -187,7 +203,7 @@ public class CollectionService : ICollectionService
 		return serviceResponse;
 	}
 
-	public async Task<ServiceResponse<bool>> DeleteCollection(string name)
+	public async Task<ServiceResponse<bool>> DeleteCollectionAsync(string name)
 	{
 		var serviceResponse = new ServiceResponse<bool>();
 
@@ -223,7 +239,7 @@ public class CollectionService : ICollectionService
 		return serviceResponse;
 	}
 	
-	public async Task<ServiceResponse<Collection>> AddBookToCollection(int collectionId, int bookId)
+	public async Task<ServiceResponse<Collection>> AddBookToCollectionAsync(int collectionId, int bookId)
 	{
 		var serviceResponse = new ServiceResponse<Collection>();
 
