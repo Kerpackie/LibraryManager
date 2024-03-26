@@ -22,11 +22,13 @@ namespace LibraryManager.Core.Models
 
         public virtual ICollection<Subject> Subjects { get; set; }
         public virtual ICollection<Note> Notes { get; set; }
+        public virtual ICollection<Collection> Collections { get; set; }
 
         public Book()
         {
             Subjects = new HashSet<Subject>();
             Notes = new HashSet<Note>();
+            Collections = new HashSet<Collection>();
         }
 
         public Book(OpenLibraryResponse openLibraryResponse)
