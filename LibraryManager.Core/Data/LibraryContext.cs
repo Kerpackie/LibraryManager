@@ -1,5 +1,6 @@
 ﻿using System.Data.SQLite;
 using LibraryManager.Core.Data.EntityMapping;
+using LibraryManager.Core.Data.EntitySeeds;
 using LibraryManager.Core.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -20,6 +21,7 @@ public class LibraryContext : DbContext
 	public virtual DbSet<Cover> Covers { get; set; } = null!;
 	public virtual DbSet<Publisher> Publishers { get; set; } = null!;
 	public virtual DbSet<Subject> Subjects { get; set; } = null!;
+	public virtual DbSet<Collection> Collections { get; set; } = null!;
 	
 	protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 	{
@@ -61,5 +63,10 @@ public class LibraryContext : DbContext
 		modelBuilder.ApplyConfiguration(new AuthorMapping());
 		modelBuilder.ApplyConfiguration(new PublisherMapping());
 		modelBuilder.ApplyConfiguration(new SubjectMapping());
+		modelBuilder.ApplyConfiguration(new NoteMapping());
+		modelBuilder.ApplyConfiguration(new CollectionMapping());
+
+		modelBuilder.ApplyConfiguration(new CollectionSeed());
 	}
+	
 }

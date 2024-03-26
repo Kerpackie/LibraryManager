@@ -26,6 +26,7 @@ public static class DependencyInjection
 		services.AddScoped<IPublisherService, PublisherService>();
 		services.AddScoped<ISubjectService, SubjectService>();
 		services.AddScoped<INoteService, NoteService>();
+		services.AddScoped<IAuthorValidator, AuthorValidator>();
 
 		services.AddScoped<IAuthorValidator, AuthorValidator>();
 		services.AddScoped<IPublisherValidator, PublisherValidator>();
