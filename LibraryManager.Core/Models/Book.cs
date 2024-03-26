@@ -10,11 +10,11 @@ namespace LibraryManager.Core.Models
         public int? AuthorId { get; set; }
         public int PageCount { get; set; }
         public int PagesRead { get; set; }
-        public int Owned { get; set; }
-        public int Loaned { get; set; }
+        public bool Owned { get; set; }
+        public bool Loaned { get; set; }
         public int? PublisherId { get; set; }
         public int CoverId { get; set; }
-        public int CoversDownloaded { get; set; }
+        public bool CoversDownloaded { get; set; }
 
         public virtual Author? Author { get; set; }
         public virtual Cover Cover { get; set; } = null!;
@@ -23,12 +23,14 @@ namespace LibraryManager.Core.Models
         public virtual ICollection<Subject> Subjects { get; set; }
         public virtual ICollection<Note> Notes { get; set; }
         public virtual ICollection<Collection> Collections { get; set; }
+        public virtual ICollection<Loan> Loans { get; set; }
 
         public Book()
         {
             Subjects = new HashSet<Subject>();
             Notes = new HashSet<Note>();
             Collections = new HashSet<Collection>();
+            Loans = new HashSet<Loan>();
         }
 
         public Book(OpenLibraryResponse openLibraryResponse)
@@ -37,9 +39,9 @@ namespace LibraryManager.Core.Models
             Title = openLibraryResponse.Title;
             PageCount = openLibraryResponse.Number_of_pages;
             PagesRead = 0;
-            Owned = 0;
-            Loaned = 0;
-            CoversDownloaded = 0;
+            Owned = false;
+            Loaned = false;
+            CoversDownloaded = false;
 
             Author = new Author{ Name = openLibraryResponse.Authors?[0].Name };
             Publisher = new Publisher{ Name = openLibraryResponse.Publishers?[0].Name };

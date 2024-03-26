@@ -22,6 +22,7 @@ public class LibraryContext : DbContext
 	public virtual DbSet<Publisher> Publishers { get; set; } = null!;
 	public virtual DbSet<Subject> Subjects { get; set; } = null!;
 	public virtual DbSet<Collection> Collections { get; set; } = null!;
+	public virtual DbSet<Loan> Loans { get; set; } = null!;
 	
 	protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 	{
