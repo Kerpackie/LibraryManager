@@ -9,9 +9,9 @@ public class CollectionSeed : IEntityTypeConfiguration<Collection>
 	public void Configure(EntityTypeBuilder<Collection> builder)
 	{
 		builder.HasData(
-			new Collection { Name = "Wishlist" },
-			new Collection { Name = "Read" },
-			new Collection { Name = "To Read" }
+			new Collection { Id = 1, Name = "Wishlist" },
+			new Collection { Id = 2, Name = "Read" },
+			new Collection { Id = 3, Name = "To Read" }
 		);
 	}
 }
