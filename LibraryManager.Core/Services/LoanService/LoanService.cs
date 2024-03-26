@@ -69,7 +69,7 @@ public class LoanService : ILoanService
 		try
 		{
 			var loan = await _context.Loans.FindAsync(id);
-			if (loan == null)
+			if (loan == null || loan.Deleted)
 			{
 				response.Success = false;
 				response.Message = "Loan not found";
@@ -95,8 +95,10 @@ public class LoanService : ILoanService
 		try
 		{
 			var loan = await _context.Loans
+				.Where(l => l.Deleted == false)
 				.Include(l => l.Books)
-				.FirstOrDefaultAsync(l => l.Books.Any(b => b.Id == bookId));
+				.FirstOrDefaultAsync(l => l.Books
+					.Any(b => b.Id == bookId));
 			if (loan == null)
 			{
 				response.Success = false;
@@ -122,7 +124,9 @@ public class LoanService : ILoanService
 
 		try
 		{
-			var loans = await _context.Loans.ToListAsync();
+			var loans = await _context.Loans
+				.Where(l => l.Deleted == false)
+				.ToListAsync();
 
 			if (loans.Count == 0)
 			{
@@ -149,7 +153,7 @@ public class LoanService : ILoanService
 		try
 		{
 			var loans = await _context.Loans
-				.Where(l => l.Borrower == borrower)
+				.Where(l => l.Deleted == false && l.Borrower == borrower)
 				.ToListAsync();
 
 			if (loans.Count == 0)
@@ -179,12 +183,27 @@ public class LoanService : ILoanService
 		try
 		{
 			var loan = await _context.Loans
+				.Where(l => l.Deleted == false)
 				.Include(l => l.Books)
 				.FirstOrDefaultAsync(l => l.Id == id);
 			if (loan == null)
 			{
 				response.Success = false;
 				response.Message = "Loan not found";
+				return response;
+			}
+
+			if (loan.Books.Any(book => !book.Loaned))
+			{
+				response.Success = false;
+				response.Message = "Book is not on loan";
+				return response;
+			}
+
+			if (loan.IsReturned)
+			{
+				response.Success = false;
+				response.Message = "Loan is already returned";
 				return response;
 			}
 
@@ -225,8 +244,10 @@ public class LoanService : ILoanService
 		try
 		{
 			var loan = await _context.Loans
+				.Where(l => l.Deleted == false)
 				.Include(l => l.Books)
 				.FirstOrDefaultAsync(l => l.Id == updatedLoan.Id);
+			
 			if (loan == null)
 			{
 				response.Success = false;
@@ -296,6 +317,7 @@ public class LoanService : ILoanService
 		try
 		{
 			var loan = await _context.Loans
+				.Where(l => l.Deleted == false)
 				.Include(l => l.Books)
 				.FirstOrDefaultAsync(l => l.Id == id);
 			if (loan == null)
@@ -311,7 +333,8 @@ public class LoanService : ILoanService
 				_context.Books.Update(book);
 			}
 
-			_context.Loans.Remove(loan);
+			loan.Deleted = true;
+			_context.Loans.Update(loan);
 			await _context.SaveChangesAsync();
 			await transaction.CommitAsync();
 

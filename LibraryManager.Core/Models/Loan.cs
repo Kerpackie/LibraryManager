@@ -7,7 +7,7 @@ public class Loan
 	public DateTime LoanDate { get; set; }
 	public DateTime? ReturnDate { get; set; }
 	public bool IsReturned { get; set; }
-
+	public bool Deleted { get; set; }
 	public virtual ICollection<Book> Books { get; set; }
 	
 	public Loan()
