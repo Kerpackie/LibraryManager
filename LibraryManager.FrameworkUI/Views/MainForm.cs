@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
 using LibraryManager.FrameworkUI.Services.FormService;
-using LibraryManager.FrameworkUI.Views.BookForms;
 using LibraryManager.FrameworkUI.Views.BookForms.AddBookForms;
-using LibraryManager.FrameworkUI.Views.BookForms.BaseBookForms;
 using LibraryManager.FrameworkUI.Views.BookForms.ViewBookForms;
 
 namespace LibraryManager.FrameworkUI.Views
@@ -28,7 +26,7 @@ namespace LibraryManager.FrameworkUI.Views
 				}
 			}
 			
-			_formService.OpenChildForm<AddBookForm>(panelContent);
+			_formService.OpenChildFormWithArgument<AddBookForm, string>(panelContent, "Import");
 		}
 
 		private void button1_Click(object sender, EventArgs e)
@@ -54,7 +52,7 @@ namespace LibraryManager.FrameworkUI.Views
 				}
 			}
 			
-			_formService.OpenChildForm<BaseBookForm>(panelContent);
+			_formService.OpenChildFormWithArgument<AddBookForm, string>(panelContent, "Manual");
 		}
 	}
 }

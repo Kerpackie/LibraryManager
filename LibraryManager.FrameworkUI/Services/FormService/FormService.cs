@@ -80,5 +80,23 @@ namespace LibraryManager.FrameworkUI.Services.FormService
 			form.Show();
 			FormOpened?.Invoke(this, EventArgs.Empty, form);
 		}
+		
+		public void OpenChildFormWithArguments<T>(Panel panel, params object[] args) where T : Form
+		{
+			var allArgs = new object[args.Length + 1];
+			allArgs[0] = panel;
+			Array.Copy(args, 0, allArgs, 1, args.Length);
+
+			var form = ActivatorUtilities.CreateInstance<T>(_serviceProvider, allArgs);
+			form.TopLevel = false;
+
+			// Set Form Properties
+			form.FormBorderStyle = FormBorderStyle.None;
+			form.Dock = DockStyle.Fill;
+
+			panel.Controls.Add(form);
+			form.Show();
+			FormOpened?.Invoke(this, EventArgs.Empty, form);
+		}
 	}
 }

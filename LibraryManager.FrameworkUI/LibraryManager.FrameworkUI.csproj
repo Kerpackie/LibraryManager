@@ -64,6 +64,8 @@
     <ItemGroup>
         <Compile Include="Controls\BookFormControls\CollectionControls.cs" />
         <Compile Include="Controls\BookFormControls\SubjectControls.cs" />
+        <Compile Include="Controls\ControlBarControls\ImportControls.cs" />
+        <Compile Include="Controls\ControlBarControls\SearchControls.cs" />
         <Compile Include="Extensions\BookFormExtensions.cs" />
         <Compile Include="Form1.cs">
             <SubType>Form</SubType>
@@ -90,6 +92,12 @@
         </Compile>
         <Compile Include="Views\BookForms\BaseBookForms\BaseBookForm.Designer.cs">
           <DependentUpon>BaseBookForm.cs</DependentUpon>
+        </Compile>
+        <Compile Include="Views\BookForms\SearchBookForms\SearchBookForm.cs">
+          <SubType>Form</SubType>
+        </Compile>
+        <Compile Include="Views\BookForms\SearchBookForms\SearchBookForm.Designer.cs">
+          <DependentUpon>SearchBookForm.cs</DependentUpon>
         </Compile>
         <Compile Include="Views\BookForms\ViewBookForms\ViewBookForm.cs">
           <SubType>Form</SubType>
@@ -120,6 +128,9 @@
         </EmbeddedResource>
         <EmbeddedResource Include="Views\BookForms\BaseBookForms\BaseBookForm.resx">
           <DependentUpon>BaseBookForm.cs</DependentUpon>
+        </EmbeddedResource>
+        <EmbeddedResource Include="Views\BookForms\SearchBookForms\SearchBookForm.resx">
+          <DependentUpon>SearchBookForm.cs</DependentUpon>
         </EmbeddedResource>
         <EmbeddedResource Include="Views\BookForms\ViewBookForms\ViewBookForm.resx">
           <DependentUpon>ViewBookForm.cs</DependentUpon>

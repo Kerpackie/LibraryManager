@@ -36,13 +36,18 @@ namespace LibraryManager.FrameworkUI.Views.BookForms.BaseBookForms
 		private void InitializeComponent()
 		{
 			this.panelControl = new System.Windows.Forms.Panel();
+			this.btnImportBook = new System.Windows.Forms.Button();
+			this.checkBoxSearchOwned = new System.Windows.Forms.CheckBox();
+			this.tbISBNSearch = new System.Windows.Forms.TextBox();
+			this.lblISBNSearch = new System.Windows.Forms.Label();
 			this.panelBody = new System.Windows.Forms.Panel();
+			this.comboBoxPublisher = new System.Windows.Forms.ComboBox();
 			this.btnRemoveNote = new System.Windows.Forms.Button();
 			this.btnSaveNote = new System.Windows.Forms.Button();
 			this.btnUpdateBook = new System.Windows.Forms.Button();
 			this.comboBoxAuthor = new System.Windows.Forms.ComboBox();
 			this.richTextBox1 = new System.Windows.Forms.RichTextBox();
-			this.textBox1 = new System.Windows.Forms.TextBox();
+			this.tbNoteTitle = new System.Windows.Forms.TextBox();
 			this.lblNotesTitle = new System.Windows.Forms.Label();
 			this.listBoxNotes = new System.Windows.Forms.ListBox();
 			this.lblNotes = new System.Windows.Forms.Label();
@@ -54,7 +59,6 @@ namespace LibraryManager.FrameworkUI.Views.BookForms.BaseBookForms
 			this.lblPagesRead = new System.Windows.Forms.Label();
 			this.tbPageCount = new System.Windows.Forms.TextBox();
 			this.lblPageCount = new System.Windows.Forms.Label();
-			this.tbPublisher = new System.Windows.Forms.TextBox();
 			this.lblPublisher = new System.Windows.Forms.Label();
 			this.lblAuthor = new System.Windows.Forms.Label();
 			this.tbTitle = new System.Windows.Forms.TextBox();
@@ -83,15 +87,56 @@ namespace LibraryManager.FrameworkUI.Views.BookForms.BaseBookForms
 			this.panelControl.Size = new System.Drawing.Size(895, 77);
 			this.panelControl.TabIndex = 0;
 			// 
+			// btnImportBook
+			// 
+			this.btnImportBook.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte) (0)));
+			this.btnImportBook.Location = new System.Drawing.Point(769, 12);
+			this.btnImportBook.Name = "btnImportBook";
+			this.btnImportBook.Size = new System.Drawing.Size(114, 59);
+			this.btnImportBook.TabIndex = 37;
+			this.btnImportBook.Text = "Import Book";
+			this.btnImportBook.UseVisualStyleBackColor = true;
+			// 
+			// checkBoxSearchOwned
+			// 
+			this.checkBoxSearchOwned.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.checkBoxSearchOwned.Checked = true;
+			this.checkBoxSearchOwned.CheckState = System.Windows.Forms.CheckState.Checked;
+			this.checkBoxSearchOwned.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte) (0)));
+			this.checkBoxSearchOwned.Location = new System.Drawing.Point(12, 41);
+			this.checkBoxSearchOwned.Name = "checkBoxSearchOwned";
+			this.checkBoxSearchOwned.Size = new System.Drawing.Size(85, 36);
+			this.checkBoxSearchOwned.TabIndex = 14;
+			this.checkBoxSearchOwned.Text = "Owned:";
+			this.checkBoxSearchOwned.UseVisualStyleBackColor = true;
+			// 
+			// tbISBNSearch
+			// 
+			this.tbISBNSearch.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte) (0)));
+			this.tbISBNSearch.Location = new System.Drawing.Point(74, 12);
+			this.tbISBNSearch.Name = "tbISBNSearch";
+			this.tbISBNSearch.Size = new System.Drawing.Size(260, 26);
+			this.tbISBNSearch.TabIndex = 6;
+			// 
+			// lblISBNSearch
+			// 
+			this.lblISBNSearch.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte) (0)));
+			this.lblISBNSearch.Location = new System.Drawing.Point(20, 15);
+			this.lblISBNSearch.Name = "lblISBNSearch";
+			this.lblISBNSearch.Size = new System.Drawing.Size(54, 23);
+			this.lblISBNSearch.TabIndex = 5;
+			this.lblISBNSearch.Text = "ISBN:";
+			// 
 			// panelBody
 			// 
 			this.panelBody.BackColor = System.Drawing.SystemColors.ControlLight;
+			this.panelBody.Controls.Add(this.comboBoxPublisher);
 			this.panelBody.Controls.Add(this.btnRemoveNote);
 			this.panelBody.Controls.Add(this.btnSaveNote);
 			this.panelBody.Controls.Add(this.btnUpdateBook);
 			this.panelBody.Controls.Add(this.comboBoxAuthor);
 			this.panelBody.Controls.Add(this.richTextBox1);
-			this.panelBody.Controls.Add(this.textBox1);
+			this.panelBody.Controls.Add(this.tbNoteTitle);
 			this.panelBody.Controls.Add(this.lblNotesTitle);
 			this.panelBody.Controls.Add(this.listBoxNotes);
 			this.panelBody.Controls.Add(this.lblNotes);
@@ -103,27 +148,27 @@ namespace LibraryManager.FrameworkUI.Views.BookForms.BaseBookForms
 			this.panelBody.Controls.Add(this.lblPagesRead);
 			this.panelBody.Controls.Add(this.tbPageCount);
 			this.panelBody.Controls.Add(this.lblPageCount);
-			this.panelBody.Controls.Add(this.tbPublisher);
 			this.panelBody.Controls.Add(this.lblPublisher);
 			this.panelBody.Controls.Add(this.lblAuthor);
 			this.panelBody.Controls.Add(this.tbTitle);
 			this.panelBody.Controls.Add(this.lblTitle);
 			this.panelBody.Controls.Add(this.tbISBN);
 			this.panelBody.Controls.Add(this.lblISBN);
-			this.panelBody.Controls.Add(this.pictureBox1);/*
-			this.panelBody.Controls.Add(this.listBoxAllSubjects);
-			this.panelBody.Controls.Add(this.listBoxBookSubjects);
-			this.panelBody.Controls.Add(this.listBoxAllCollections);
-			this.panelBody.Controls.Add(this.listBoxBookCollections);
-			this.panelBody.Controls.Add(this.btnRemoveSubjectFromBook);
-			this.panelBody.Controls.Add(this.btnAddSubjectToBook);
-			this.panelBody.Controls.Add(this.btnRemoveCollectionFromBook);
-			this.panelBody.Controls.Add(this.btnAddCollectionToBook);*/
+			this.panelBody.Controls.Add(this.pictureBox1);
 			this.panelBody.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.panelBody.Location = new System.Drawing.Point(0, 77);
 			this.panelBody.Name = "panelBody";
 			this.panelBody.Size = new System.Drawing.Size(895, 455);
 			this.panelBody.TabIndex = 1;
+			// 
+			// comboBoxPublisher
+			// 
+			this.comboBoxPublisher.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte) (0)));
+			this.comboBoxPublisher.FormattingEnabled = true;
+			this.comboBoxPublisher.Location = new System.Drawing.Point(650, 72);
+			this.comboBoxPublisher.Name = "comboBoxPublisher";
+			this.comboBoxPublisher.Size = new System.Drawing.Size(178, 28);
+			this.comboBoxPublisher.TabIndex = 36;
 			// 
 			// btnRemoveNote
 			// 
@@ -173,13 +218,13 @@ namespace LibraryManager.FrameworkUI.Views.BookForms.BaseBookForms
 			this.richTextBox1.TabIndex = 23;
 			this.richTextBox1.Text = "";
 			// 
-			// textBox1
+			// tbNoteTitle
 			// 
-			this.textBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte) (0)));
-			this.textBox1.Location = new System.Drawing.Point(322, 349);
-			this.textBox1.Name = "textBox1";
-			this.textBox1.Size = new System.Drawing.Size(403, 26);
-			this.textBox1.TabIndex = 22;
+			this.tbNoteTitle.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte) (0)));
+			this.tbNoteTitle.Location = new System.Drawing.Point(322, 349);
+			this.tbNoteTitle.Name = "tbNoteTitle";
+			this.tbNoteTitle.Size = new System.Drawing.Size(403, 26);
+			this.tbNoteTitle.TabIndex = 22;
 			// 
 			// lblNotesTitle
 			// 
@@ -283,14 +328,6 @@ namespace LibraryManager.FrameworkUI.Views.BookForms.BaseBookForms
 			this.lblPageCount.Size = new System.Drawing.Size(102, 23);
 			this.lblPageCount.TabIndex = 9;
 			this.lblPageCount.Text = "Page Count:";
-			// 
-			// tbPublisher
-			// 
-			this.tbPublisher.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte) (0)));
-			this.tbPublisher.Location = new System.Drawing.Point(650, 71);
-			this.tbPublisher.Name = "tbPublisher";
-			this.tbPublisher.Size = new System.Drawing.Size(178, 26);
-			this.tbPublisher.TabIndex = 8;
 			// 
 			// lblPublisher
 			// 
@@ -452,6 +489,12 @@ namespace LibraryManager.FrameworkUI.Views.BookForms.BaseBookForms
 			this.ResumeLayout(false);
 		}
 
+		private System.Windows.Forms.TextBox tbISBNSearch;
+		private System.Windows.Forms.Label lblISBNSearch;
+		private System.Windows.Forms.CheckBox checkBoxSearchOwned;
+		private System.Windows.Forms.ComboBox comboBoxPublisher;
+		private System.Windows.Forms.Button btnImportBook;
+
 		private System.Windows.Forms.ListBox listBoxBookCollections;
 		private System.Windows.Forms.Button btnRemoveCollectionFromBook;
 		private System.Windows.Forms.Button btnAddCollectionToBook;
@@ -470,7 +513,7 @@ namespace LibraryManager.FrameworkUI.Views.BookForms.BaseBookForms
 
 		private System.Windows.Forms.RichTextBox richTextBox1;
 
-		private System.Windows.Forms.TextBox textBox1;
+		private System.Windows.Forms.TextBox tbNoteTitle;
 
 		private System.Windows.Forms.Label lblNotesTitle;
 
@@ -487,7 +530,6 @@ namespace LibraryManager.FrameworkUI.Views.BookForms.BaseBookForms
 		private System.Windows.Forms.TextBox tbTitle;
 		private System.Windows.Forms.Label lblTitle;
 		private System.Windows.Forms.Label lblAuthor;
-		private System.Windows.Forms.TextBox tbPublisher;
 		private System.Windows.Forms.Label lblPublisher;
 		private System.Windows.Forms.TextBox tbPageCount;
 		private System.Windows.Forms.Label lblPageCount;

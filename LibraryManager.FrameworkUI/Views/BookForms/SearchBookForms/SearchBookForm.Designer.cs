@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel;
 
-namespace LibraryManager.FrameworkUI.Views.BookForms.ViewBookForms
+namespace LibraryManager.FrameworkUI.Views.BookForms.SearchBookForms
 {
-	partial class ViewBookForm
+	partial class SearchBookForm
 	{
 		/// <summary>
 		/// Required designer variable.
@@ -33,15 +33,16 @@ namespace LibraryManager.FrameworkUI.Views.BookForms.ViewBookForms
 		{
 			this.SuspendLayout();
 			// 
-			// ViewBookForm
+			// SearchBookForm
 			// 
-			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
 			this.BackColor = System.Drawing.SystemColors.ActiveCaption;
-			this.ClientSize = new System.Drawing.Size(800, 450);
+			this.ClientSize = new System.Drawing.Size(879, 416);
+			this.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte) (0)));
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
-			this.Name = "ViewBookForm";
-			this.Text = "ViewBookForm";
+			this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+			this.Name = "SearchBookForm";
+			this.Text = "SearchBookForm";
 			this.ResumeLayout(false);
 		}
 

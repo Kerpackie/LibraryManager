@@ -1,55 +1,67 @@
 ﻿using System.Windows.Forms;
+using System.Xml.Serialization;
 using LibraryManager.FrameworkUI.Controls;
 using LibraryManager.FrameworkUI.Controls.BookFormControls;
+using LibraryManager.FrameworkUI.Controls.ControlBarControls;
 using LibraryManager.FrameworkUI.Views.BookForms.BaseBookForms;
 
 namespace LibraryManager.FrameworkUI.Views.BookForms.AddBookForms
 {
 	public partial class AddBookForm : BaseBookForm
 	{
-		public AddBookForm()
+		public AddBookForm(object args)
 		{
+			if (args is string arg)
+			{
+				switch(arg)
+				{
+					case "Import":
+						AddImportControlControls();
+						AddImportBodyControls();
+						panelBody.Enabled = false;
+						break;
+					case "Manual":
+						AddManualBodyControls();
+						panelBody.Enabled = true;
+						break;
+				}
+			}
+			
 			InitializeComponent();
-
-			var subjectList = SubjectControls.CreateListBoxBookSubjectsViewMode();
-			panelBody.Controls.Add(subjectList);
-			
-			var collectionList = CollectionControls.CreateListBoxBookCollectionsViewMode();
-			panelBody.Controls.Add(collectionList);
-
-			panelBody.Enabled = false;
-			
 		}
 
-		private static ListBox CreateListBoxSubjects()
+		private void AddManualBodyControls()
 		{
-			var listBoxSubjects = new ListBox
-			{
-				Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0))),
-				ItemHeight = 20,
-				Location = new System.Drawing.Point(58, 190),
-				Name = "listBoxSubjects",
-				Size = new System.Drawing.Size(366, 124)
-			};
-
-			return listBoxSubjects;
+			var subjectControls = SubjectControls.CreateBookSubjectControlsEditMode();
+			panelBody.Controls.AddRange(subjectControls);
+			
+			var collectionControls = CollectionControls.CreateBookCollectionControlsEditMode();
+			panelBody.Controls.AddRange(collectionControls);
 		}
 
-		private static ListBox CreateListBoxCollections()
+		private void AddImportBodyControls()
 		{
-			var listBoxCollections = new ListBox
-			{
-				Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0))),
-				ItemHeight = 20,
-				Location = new System.Drawing.Point(463, 190),
-				Name = "listBoxCollections",
-				Size = new System.Drawing.Size(366, 124)
-			};
-
-			return listBoxCollections;
+			var subjectControls = SubjectControls.CreateListBoxBookSubjectsViewMode();
+			panelBody.Controls.Add(subjectControls);
+			
+			var collectionControls = CollectionControls.CreateListBoxBookCollectionsViewMode();
+			panelBody.Controls.Add(collectionControls);
 		}
 		
-		
+		private void AddImportControlControls()
+		{
+			var isbnLabel = ImportControls.IsbnSearchLabel();
+			panelControl.Controls.Add(isbnLabel);
+			
+			var isbnTextBox = ImportControls.IsbnSearchTextBox();
+			panelControl.Controls.Add(isbnTextBox);
+
+			var importButton = ImportControls.ImportButton();
+			panelControl.Controls.Add(importButton);
+
+			var isOwnedCheckBox = ImportControls.BookOwnedOnImportCheckBox();
+			panelControl.Controls.Add(isOwnedCheckBox);
+		}
 		
 	}
 }

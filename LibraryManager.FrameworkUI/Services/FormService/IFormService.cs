@@ -34,5 +34,7 @@ namespace LibraryManager.FrameworkUI.Services.FormService
 		void OpenChildForm<T>(Panel panel) where T : Form;
 
 		void OpenChildFormWithArgument<T, TArg>(Panel panel, TArg arg) where T : Form;
+		
+		void OpenChildFormWithArguments<T>(Panel panel, params object[] args) where T : Form;
 	}
 }
