@@ -33,13 +33,21 @@ namespace LibraryManager.FrameworkUI.Views.BookForms.ViewBookForms
 		{
 			this.SuspendLayout();
 			// 
+			// panelControl
+			// 
+			this.panelControl.Size = new System.Drawing.Size(906, 77);
+			// 
+			// panelBody
+			// 
+			this.panelBody.Size = new System.Drawing.Size(906, 490);
+			// 
 			// ViewBookForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.BackColor = System.Drawing.SystemColors.ActiveCaption;
-			this.ClientSize = new System.Drawing.Size(800, 450);
-			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
+			this.ClientSize = new System.Drawing.Size(906, 567);
+			this.Location = new System.Drawing.Point(0, 0);
 			this.Name = "ViewBookForm";
 			this.Text = "ViewBookForm";
 			this.ResumeLayout(false);

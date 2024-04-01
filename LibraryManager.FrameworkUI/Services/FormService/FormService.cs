@@ -81,13 +81,10 @@ namespace LibraryManager.FrameworkUI.Services.FormService
 			FormOpened?.Invoke(this, EventArgs.Empty, form);
 		}
 		
-		public void OpenChildFormWithArguments<T>(Panel panel, params object[] args) where T : Form
+		public void OpenChildFormWithParentPanelAndArguments<T>(Panel panel, params object[] args) where T : Form
 		{
-			var allArgs = new object[args.Length + 1];
-			allArgs[0] = panel;
-			Array.Copy(args, 0, allArgs, 1, args.Length);
-
-			var form = ActivatorUtilities.CreateInstance<T>(_serviceProvider, allArgs);
+			var formService = _serviceProvider.GetRequiredService<IFormService>();
+			var form = (Form)Activator.CreateInstance(typeof(T), panel, formService, args);
 			form.TopLevel = false;
 
 			// Set Form Properties

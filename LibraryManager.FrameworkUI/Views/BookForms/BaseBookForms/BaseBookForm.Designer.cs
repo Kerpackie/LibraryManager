@@ -84,7 +84,7 @@ namespace LibraryManager.FrameworkUI.Views.BookForms.BaseBookForms
 			this.panelControl.Dock = System.Windows.Forms.DockStyle.Top;
 			this.panelControl.Location = new System.Drawing.Point(0, 0);
 			this.panelControl.Name = "panelControl";
-			this.panelControl.Size = new System.Drawing.Size(895, 77);
+			this.panelControl.Size = new System.Drawing.Size(908, 77);
 			this.panelControl.TabIndex = 0;
 			// 
 			// btnImportBook
@@ -158,7 +158,7 @@ namespace LibraryManager.FrameworkUI.Views.BookForms.BaseBookForms
 			this.panelBody.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.panelBody.Location = new System.Drawing.Point(0, 77);
 			this.panelBody.Name = "panelBody";
-			this.panelBody.Size = new System.Drawing.Size(895, 455);
+			this.panelBody.Size = new System.Drawing.Size(908, 481);
 			this.panelBody.TabIndex = 1;
 			// 
 			// comboBoxPublisher
@@ -477,7 +477,7 @@ namespace LibraryManager.FrameworkUI.Views.BookForms.BaseBookForms
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
-			this.ClientSize = new System.Drawing.Size(895, 532);
+			this.ClientSize = new System.Drawing.Size(908, 558);
 			this.Controls.Add(this.panelBody);
 			this.Controls.Add(this.panelControl);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;

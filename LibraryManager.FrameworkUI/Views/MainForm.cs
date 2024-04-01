@@ -2,6 +2,7 @@
 using System.Windows.Forms;
 using LibraryManager.FrameworkUI.Services.FormService;
 using LibraryManager.FrameworkUI.Views.BookForms.AddBookForms;
+using LibraryManager.FrameworkUI.Views.BookForms.SearchBookForms;
 using LibraryManager.FrameworkUI.Views.BookForms.ViewBookForms;
 
 namespace LibraryManager.FrameworkUI.Views
@@ -39,7 +40,7 @@ namespace LibraryManager.FrameworkUI.Views
 				}
 			}
 			
-			_formService.OpenChildForm<ViewBookForm>(panelContent);
+			_formService.OpenChildFormWithParentPanelAndArguments<ViewBookForm>(panelContent);
 		}
 
 		private void button2_Click(object sender, EventArgs e)
@@ -53,6 +54,19 @@ namespace LibraryManager.FrameworkUI.Views
 			}
 			
 			_formService.OpenChildFormWithArgument<AddBookForm, string>(panelContent, "Manual");
+		}
+
+		private void button3_Click(object sender, EventArgs e)
+		{
+			foreach (Control control in panelContent.Controls)
+			{
+				if (control is Form form)
+				{
+					form.Dispose();
+				}
+			}
+			
+			_formService.OpenChildFormWithParentPanelAndArguments<SearchBookForm>(panelContent);
 		}
 	}
 }

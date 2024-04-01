@@ -1,8 +1,8 @@
 ﻿using LibraryManager.FrameworkUI.Services.FormService;
 using LibraryManager.FrameworkUI.Views;
-using LibraryManager.FrameworkUI.Views.BookForms;
 using LibraryManager.FrameworkUI.Views.BookForms.AddBookForms;
 using LibraryManager.FrameworkUI.Views.BookForms.BaseBookForms;
+using LibraryManager.FrameworkUI.Views.BookForms.SearchBookForms;
 using LibraryManager.FrameworkUI.Views.BookForms.ViewBookForms;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -25,6 +25,7 @@ namespace LibraryManager.FrameworkUI.Services
 			services.AddTransient<AddBookForm>();
 			services.AddTransient<ViewBookForm>();
 			services.AddTransient<BaseBookForm>();
+			services.AddTransient<SearchBookForm>();
 
 			return services;
 		}
