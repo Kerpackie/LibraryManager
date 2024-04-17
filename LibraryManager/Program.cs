@@ -33,15 +33,12 @@ namespace LibraryManager
             };
             
             var services = new ServiceCollection();
-            /*services.AddLibraryManager();
-            services.AddLibraryManagerDatabase(dbConnection);
-            services.AddLibraryManagerCore();
-            */
             
             //services.AddSingleton(dbConnection);
             services.AddLibraryManagerDatabase(dbConnection);
             services.AddLibraryManagerCore();
             services.AddLibraryManager();
+            services.UseOpenLibraryApi();
             
             var serviceProvider = services.BuildServiceProvider();
 

@@ -26,6 +26,8 @@ public class LibraryContext : DbContext
 	
 	protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 	{
+		optionsBuilder.LogTo(action: Console.WriteLine);
+		
 		switch (_dbConnectionConfig.ProviderName)
 		{
 			case "SQLite":
@@ -74,6 +76,8 @@ public class LibraryContext : DbContext
 		modelBuilder.ApplyConfiguration(new CollectionMapping());
 
 		modelBuilder.ApplyConfiguration(new CollectionSeed());
-	}
+        modelBuilder.ApplyConfiguration(new AuthorSeed());
+		modelBuilder.ApplyConfiguration(new PublisherSeed());
+    }
 	
 }

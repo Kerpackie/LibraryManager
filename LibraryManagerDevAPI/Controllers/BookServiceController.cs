@@ -51,4 +51,14 @@ public class BookServiceController : ControllerBase
 		return Ok(books);
 	}
 	
+	// Create an endpoint to create a book
+	
+	[HttpPost("api-demo/books")]
+	public async Task<IActionResult> CreateBook([FromBody] Book book)
+	{
+		var createdBook = await _bookService.InsertOrIgnoreBookAsync(book);
+
+		return CreatedAtAction(nameof(GetBookByIsbn), new {isbn = createdBook.Data.Isbn}, createdBook);
+	}
+	
 }

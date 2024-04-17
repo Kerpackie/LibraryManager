@@ -1,5 +1,6 @@
 ﻿using LibraryManager.Services.FormService;
 using LibraryManager.Views;
+using LibraryManager.Views.BookForms.AddBookForms;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace LibraryManager.Services
@@ -18,6 +19,7 @@ namespace LibraryManager.Services
 		{
 			services.AddSingleton<IFormService, FormService.FormService>();
 			services.AddTransient<MainForm>();
+			services.AddTransient<AddBookForm>();
 
 			return services;
 		}

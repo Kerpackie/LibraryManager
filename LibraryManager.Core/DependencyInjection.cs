@@ -1,4 +1,5 @@
-﻿using LibraryManager.Core.Data;
+﻿using System.Data;
+using LibraryManager.Core.Data;
 using LibraryManager.Core.Models;
 using LibraryManager.Core.Services.AuthorService;
 using LibraryManager.Core.Services.BookAPIService;
@@ -13,6 +14,7 @@ using LibraryManager.Core.Validators.AuthorValidator;
 using LibraryManager.Core.Validators.CoverValidator;
 using LibraryManager.Core.Validators.PublisherValidator;
 using LibraryManager.Core.Validators.SubjectValidator;
+using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Refit;
@@ -26,6 +28,7 @@ public static class DependencyInjection
 		
 		services.AddScoped<IAuthorService, AuthorService>();
 		services.AddScoped<IBookService, BookService>();
+		services.AddScoped<IDapperBookService, DapperBookService>();
 		services.AddScoped<ICollectionService, CollectionService>();
 		services.AddScoped<ICoverService, CoverService>();
 		services.AddScoped<ILoanService, LoanService>();
@@ -46,6 +49,9 @@ public static class DependencyInjection
 		
 		if (dbConnectionConfig.ProviderName == "SQLite")
 		{
+			// Getting sick of EFCore bullshit and poor errors being returned.
+			services.AddTransient<IDbConnection>(db => new SqliteConnection(dbConnectionConfig.ConnectionString));
+			
 			services.AddDbContext<LibraryContext>(options =>
 				options.UseSqlite(
 					dbConnectionConfig.ConnectionString,
@@ -58,6 +64,8 @@ public static class DependencyInjection
 					dbConnectionConfig.ConnectionString,
 					b => b.MigrationsAssembly(typeof(LibraryContext).Assembly.FullName)));
 		}
+		
+		
 
 		return services;
 	}

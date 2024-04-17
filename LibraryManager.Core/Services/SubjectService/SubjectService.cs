@@ -108,7 +108,33 @@ public class SubjectService : ISubjectService
 		};
 	}
 
-	public async Task<ServiceResponse<Subject?>> GetSubjectAsync(int id)
+    public async Task<ServiceResponse<List<Subject>>> GetAllSubjectsAsync()
+    {
+
+		var subjects = await _context.Subjects.ToListAsync();
+
+        if (subjects.Count == 0)
+        {
+            var responseFail = new ServiceResponse<List<Subject>>
+            {
+                Data = subjects,
+                Message = "No subjects found",
+                Success = false
+            };
+        }
+        
+        var responseSuccess = new ServiceResponse<List<Subject>>
+        {
+            Data = subjects,
+            Message = "Subjects found",
+            Success = true
+        };
+        
+        return responseSuccess;
+
+    }
+
+    public async Task<ServiceResponse<Subject?>> GetSubjectAsync(int id)
 	{
 		var subject = await _context.Subjects.FirstOrDefaultAsync(s => s.Id == id);
 		

@@ -101,9 +101,9 @@ public class CollectionService : ICollectionService
 		return serviceResponse;
 	}
 
-	public async Task<ServiceResponse<IEnumerable<Collection>>> GetAllCollectionsAsync()
+	public async Task<ServiceResponse<List<Collection>>> GetAllCollectionsAsync()
 	{
-		var serviceResponse = new ServiceResponse<IEnumerable<Collection>>();
+		var serviceResponse = new ServiceResponse<List<Collection>>();
 
 		try
 		{

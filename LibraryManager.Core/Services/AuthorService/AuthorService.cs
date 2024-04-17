@@ -82,7 +82,31 @@ namespace LibraryManager.Core.Services.AuthorService
 			return responseSuccess;
 		}
 
-		public async Task<ServiceResponse<Author>> GetAuthorByNameAsync(string name)
+        public async Task<ServiceResponse<List<Author>>> GetAllAuthorsAsync()
+        {
+            var authors = await _context.Authors.ToListAsync();
+
+            if (authors.Count == 0)
+            {
+				var responseFail = new ServiceResponse<List<Author>>
+                {
+                    Data = null,
+                    Message = "No authors found",
+                    Success = false
+                };
+                return responseFail;
+            }
+
+			var responseSuccess = new ServiceResponse<List<Author>>
+            {
+                Data = authors,
+                Message = "Authors found",
+                Success = true
+            };
+			return responseSuccess;
+        }
+
+        public async Task<ServiceResponse<Author>> GetAuthorByNameAsync(string name)
 		{
 			var author = await _context.Authors.FirstOrDefaultAsync(a => a.Name == name);
 			if (author == null)

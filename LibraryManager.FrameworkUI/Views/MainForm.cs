@@ -26,9 +26,10 @@ namespace LibraryManager.FrameworkUI.Views
 					form.Dispose();
 				}
 			}
-			
-			_formService.OpenChildFormWithArgument<AddBookForm, string>(panelContent, "Import");
-		}
+
+            _formService.OpenChildForm<AddBookForm>(panelContent);
+            /*_formService.OpenChildFormWithArgument<AddBookForm, string>(panelContent, "Import");*/
+        }
 
 		private void button1_Click(object sender, EventArgs e)
 		{
@@ -39,8 +40,8 @@ namespace LibraryManager.FrameworkUI.Views
 					form.Dispose();
 				}
 			}
-			
-			_formService.OpenChildFormWithParentPanelAndArguments<ViewBookForm>(panelContent);
+            _formService.OpenChildForm<AddBookForm>(panelContent);
+            //_formService.OpenChildFormWithParentPanelAndArguments<ViewBookForm>(panelContent);
 		}
 
 		private void button2_Click(object sender, EventArgs e)

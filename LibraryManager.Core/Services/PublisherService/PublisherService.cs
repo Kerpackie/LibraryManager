@@ -59,7 +59,32 @@ public class PublisherService : IPublisherService
 		return responseFail;
 	}
 
-	public async Task<ServiceResponse<Publisher?>> GetPublisherAsync(int id)
+    public async Task<ServiceResponse<List<Publisher>>> GetAllPublishersAsync()
+    {
+		var publishers = await _context.Publishers.ToListAsync();
+
+        if (publishers.Count == 0)
+        {
+			var responseFail = new ServiceResponse<List<Publisher>>
+            {
+                Data = null,
+                Message = "No publishers found",
+                Success = false
+            };
+            return responseFail;
+        }
+
+        var responseSuccess = new ServiceResponse<List<Publisher>>
+        {
+            Data = publishers,
+            Message = "Publishers found",
+            Success = true
+        };
+        return responseSuccess;
+
+    }
+
+    public async Task<ServiceResponse<Publisher?>> GetPublisherAsync(int id)
 	{
 		var publisher = await _context.Publishers.FirstOrDefaultAsync(p => p.Id == id);
 

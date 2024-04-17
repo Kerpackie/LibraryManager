@@ -6,6 +6,7 @@ public interface ISubjectService
 {
 	Task<ServiceResponse<Subject>> InsertOrIgnoreSubjectAsync(Subject subject);
 	Task<ServiceResponse<List<Subject>>> InsertOrIgnoreSubjectsAsync(List<Subject> subjects);
+	Task<ServiceResponse<List<Subject>>> GetAllSubjectsAsync();
 	Task<ServiceResponse<Subject?>> GetSubjectAsync(int id);
 	Task<ServiceResponse<Subject?>> GetSubjectByNameAsync(string name);
 	Task<ServiceResponse<Subject>> UpdateSubjectAsync(Subject subject);
