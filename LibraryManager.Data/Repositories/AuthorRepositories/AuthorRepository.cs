@@ -74,7 +74,27 @@ public class AuthorRepository : IAuthorRepository
 		var affectedRows = await connection.ExecuteAsync(sql, new { id });
 		return affectedRows;
 	}
-	
+
+	public async Task<int> Delete(Author author)
+	{
+		using var connection = _createConnection();
+		
+		var sql = "DELETE FROM Authors WHERE Id = @Id";
+		
+		var affectedRows = await connection.ExecuteAsync(sql, author);
+		return affectedRows;
+	}
+
+	public async Task<int> Delete(string authorName)
+	{
+		using var connection = _createConnection();
+		
+		var sql = "DELETE FROM Authors WHERE Name = @authorName";
+		
+		var affectedRows = await connection.ExecuteAsync(sql, new { authorName });
+		return affectedRows;
+	}
+
 	public async Task<IEnumerable<Author>> GetAuthorsByBookId(int bookId)
 	{
 		using var connection = _createConnection();

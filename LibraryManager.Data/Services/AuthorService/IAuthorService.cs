@@ -1,6 +1,6 @@
 ﻿using LibraryManager.Data.Models;
 
-namespace LibraryManager.Data.Services;
+namespace LibraryManager.Data.Services.AuthorService;
 
 public interface IAuthorService
 {

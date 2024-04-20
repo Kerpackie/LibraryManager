@@ -40,7 +40,7 @@ public class SubjectRepository : ISubjectRepository
 		return await connection.QuerySingleOrDefaultAsync<Subject>(sql, new { name });
 	}
 
-	public async Task Create(Subject subject)
+	public async Task<int> Create(Subject subject)
 	{
 		using var connection = _createConnection();
 		
@@ -49,10 +49,11 @@ public class SubjectRepository : ISubjectRepository
 			VALUES (@Name)
 		";
 		
-		await connection.ExecuteAsync(sql, subject);
+		var affectedRows = await connection.ExecuteAsync(sql, subject);
+		return affectedRows;
 	}
 
-	public async Task Update(Subject subject)
+	public async Task<int> Update(Subject subject)
 	{
 		using var connection = _createConnection();
 		
@@ -62,15 +63,17 @@ public class SubjectRepository : ISubjectRepository
 			WHERE Id = @Id
 		";
 		
-		await connection.ExecuteAsync(sql, subject);
+		var affectedRows = await connection.ExecuteAsync(sql, subject);
+		return affectedRows;
 	}
 
-	public async Task Delete(int id)
+	public async Task<int> Delete(int id)
 	{
 		using var connection = _createConnection();
 		
 		var sql = "DELETE FROM Subjects WHERE Id = @id";
 		
-		await connection.ExecuteAsync(sql, new { id });
+		var affectedRows = await connection.ExecuteAsync(sql, new { id });
+		return affectedRows;
 	}
 }

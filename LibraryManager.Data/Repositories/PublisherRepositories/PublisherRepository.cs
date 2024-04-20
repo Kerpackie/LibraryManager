@@ -40,7 +40,7 @@ public class PublisherRepository : IPublisherRepository
 		return await connection.QuerySingleOrDefaultAsync<Publisher>(sql, new { name });
 	}
 
-	public async Task Create(Publisher publisher)
+	public async Task<int> Create(Publisher publisher)
 	{
 		using var connection = _createConnection();
 		
@@ -49,10 +49,11 @@ public class PublisherRepository : IPublisherRepository
 			VALUES (@Name)
 		";
 		
-		await connection.ExecuteAsync(sql, publisher);
+		var affectedRows = await connection.ExecuteAsync(sql, publisher);
+		return affectedRows;
 	}
 
-	public async Task Update(Publisher publisher)
+	public async Task<int> Update(Publisher publisher)
 	{
 		using var connection = _createConnection();
 		
@@ -61,15 +62,17 @@ public class PublisherRepository : IPublisherRepository
 			SET Name = @Name
 		";
 		
-		await connection.ExecuteAsync(sql, publisher);
+		var affectedRows = await connection.ExecuteAsync(sql, publisher);
+		return affectedRows;
 	}
 
-	public async Task Delete(int id)
+	public async Task<int> Delete(int id)
 	{
 		using var connection = _createConnection();
 		
 		var sql = "DELETE FROM Publishers WHERE Id = @id";
 		
-		await connection.ExecuteAsync(sql, new { id });
+		var affectedRows = await connection.ExecuteAsync(sql, new { id });
+		return affectedRows;
 	}
 }

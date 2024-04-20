@@ -6,7 +6,7 @@ public interface ICoverRepository
 {
 	Task<IEnumerable<Cover>> GetAll();
 	Task<Cover> GetById();
-	Task Create(Cover cover);
-	Task Update(Cover cover);
-	Task Delete(int id);
+	Task<int> Create(Cover cover);
+	Task<int> Update(Cover cover);
+	Task<int> Delete(int id);
 }

@@ -8,8 +8,8 @@ public interface INotesRepository
 	Task<IEnumerable<Note>> GetAll();
 	Task<IEnumerable<Note>> GetAllNotesForBook(int bookId);
 	Task<Note> GetById(int id);
-	Task Create(Note note);
-	Task Update(Note note);
-	Task Delete(int id);
-	Task DeleteAllNotesForBook(int bookId);
+	Task<int> Create(Note note);
+	Task<int> Update(Note note);
+	Task<int> Delete(int id);
+	Task<int> DeleteAllNotesForBook(int bookId);
 }

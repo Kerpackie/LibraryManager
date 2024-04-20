@@ -31,7 +31,7 @@ public class CoverRepository : ICoverRepository
 		return await connection.QuerySingleOrDefaultAsync<Cover>(sql);
 	}
 
-	public async Task Create(Cover cover)
+	public async Task<int> Create(Cover cover)
 	{
 		using var connection = _createConnection();
 		
@@ -40,10 +40,11 @@ public class CoverRepository : ICoverRepository
 			VALUES (@Name)
 		";
 		
-		await connection.ExecuteAsync(sql, cover);
+		var affectedRows = await connection.ExecuteAsync(sql, cover);
+		return affectedRows;
 	}
 
-	public async Task Update(Cover cover)
+	public async Task<int> Update(Cover cover)
 	{
 		using var connection = _createConnection();
 		
@@ -53,16 +54,18 @@ public class CoverRepository : ICoverRepository
 			WHERE Id = @Id
 		";
 		
-		await connection.ExecuteAsync(sql, cover);
+		var affectedRows = await connection.ExecuteAsync(sql, cover);
+		return affectedRows;
 	}
 
-	public async Task Delete(int id)
+	public async Task<int> Delete(int id)
 	{
 		using var connection = _createConnection();
 		
 		var sql = "DELETE FROM Covers WHERE Id = @id";
 		
-		await connection.ExecuteAsync(sql, new { id });
+		var affectedRows = await connection.ExecuteAsync(sql, new { id });
+		return affectedRows;
 	}
 }
 	

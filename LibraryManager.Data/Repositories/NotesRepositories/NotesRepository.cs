@@ -40,7 +40,7 @@ public class NotesRepository : INotesRepository
 		return await connection.QuerySingleOrDefaultAsync<Note>(sql, new { id });
 	}
 
-	public async Task Create(Note note)
+	public async Task<int> Create(Note note)
 	{
 		using var connection = _createConnection();
 		
@@ -49,10 +49,11 @@ public class NotesRepository : INotesRepository
 			VALUES (@BookId, @Text)
 		";
 		
-		await connection.ExecuteAsync(sql, note);
+		var affectedRows = await connection.ExecuteAsync(sql, note);
+		return affectedRows;
 	}
 
-	public async Task Update(Note note)
+	public async Task<int> Update(Note note)
 	{
 		using var connection = _createConnection();
 		
@@ -62,24 +63,27 @@ public class NotesRepository : INotesRepository
 			WHERE Id = @Id
 		";
 		
-		await connection.ExecuteAsync(sql, note);
+		var affectedRows = await connection.ExecuteAsync(sql, note);
+		return affectedRows;
 	}
 
-	public async Task Delete(int id)
+	public async Task<int> Delete(int id)
 	{
 		using var connection = _createConnection();
 		
 		var sql = "DELETE FROM Notes WHERE Id = @id";
 		
-		await connection.ExecuteAsync(sql, new { id });
+		var affectedRows = await connection.ExecuteAsync(sql, new { id });
+		return affectedRows;
 	}
 
-	public async Task DeleteAllNotesForBook(int bookId)
+	public async Task<int> DeleteAllNotesForBook(int bookId)
 	{
 		using var connection = _createConnection();
 		
 		var sql = "DELETE FROM Notes WHERE BookId = @bookId";
 		
-		await connection.ExecuteAsync(sql, new { bookId });
+		var affectedRows = await connection.ExecuteAsync(sql, new { bookId });
+		return affectedRows;
 	}
 }

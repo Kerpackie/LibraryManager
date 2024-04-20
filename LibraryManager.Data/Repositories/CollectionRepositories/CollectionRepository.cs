@@ -40,7 +40,7 @@ public class CollectionRepository : ICollectionRepository
 		return await connection.QuerySingleOrDefaultAsync<Collection>(sql, new { name });
 	}
 
-	public async Task Create(Collection collection)
+	public async Task<int> Create(Collection collection)
 	{
 		using var connection = _createConnection();
 		
@@ -49,10 +49,11 @@ public class CollectionRepository : ICollectionRepository
 			VALUES (@Name)
 		";
 		
-		await connection.ExecuteAsync(sql, collection);
+		var affectedRows = await connection.ExecuteAsync(sql, collection);
+		return affectedRows;
 	}
 
-	public async Task Update(Collection collection)
+	public async Task<int> Update(Collection collection)
 	{
 		using var connection = _createConnection();
 		
@@ -62,15 +63,29 @@ public class CollectionRepository : ICollectionRepository
 			WHERE Id = @Id
 		";
 		
-		await connection.ExecuteAsync(sql, collection);
+		var affectedRows = await connection.ExecuteAsync(sql, collection);
+		return affectedRows;
 	}
 
-	public async Task Delete(int id)
+	public async Task<int> Delete(int id)
 	{
 		using var connection = _createConnection();
 		
 		var sql = "DELETE FROM Collections WHERE Id = @id";
 		
-		await connection.ExecuteAsync(sql, new { id });
+		var affectedRows = await connection.ExecuteAsync(sql, new { id });
+		return affectedRows;
 	}
+
+	public async Task<int> Delete(string name)
+	{
+		using var connection = _createConnection();
+		
+		var sql = "DELETE FROM Collections WHERE Name = @name";
+		
+		var affectedRows = await connection.ExecuteAsync(sql, new { name });
+
+		return affectedRows;
+	}
+	
 }

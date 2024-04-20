@@ -40,7 +40,7 @@ public class LoanRepository : ILoanRepository
 		return await connection.QuerySingleOrDefaultAsync<Loan>(sql, new { id });
 	}
 
-	public async Task Create(Loan loan)
+	public async Task<int> Create(Loan loan)
 	{
 		using var connection = _createConnection();
 		
@@ -49,10 +49,11 @@ public class LoanRepository : ILoanRepository
 			VALUES (@BookId, @MemberId, @BorrowedDate, @DueDate, @ReturnDate)
 		";
 		
-		await connection.ExecuteAsync(sql, loan);
+		var affectedRows = await connection.ExecuteAsync(sql, loan);
+		return affectedRows;
 	}
 
-	public async Task Update(Loan loan)
+	public async Task<int> Update(Loan loan)
 	{
 		using var connection = _createConnection();
 		
@@ -62,15 +63,17 @@ public class LoanRepository : ILoanRepository
 			WHERE Id = @Id
 		";
 		
-		await connection.ExecuteAsync(sql, loan);
+		var affectedRows = await connection.ExecuteAsync(sql, loan);
+		return affectedRows;
 	}
 
-	public async Task Delete(int id)
+	public async Task<int> Delete(int id)
 	{
 		using var connection = _createConnection();
 		
 		var sql = "DELETE FROM Loans WHERE Id = @id";
 		
-		await connection.ExecuteAsync(sql, new { id });
+		var affectedRows = await connection.ExecuteAsync(sql, new { id });
+		return affectedRows;
 	}
 }

@@ -26,6 +26,7 @@ public class LibraryContext : DbContext
 	
 	protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 	{
+		optionsBuilder.EnableSensitiveDataLogging();
 		optionsBuilder.LogTo(action: Console.WriteLine);
 		
 		switch (_dbConnectionConfig.ProviderName)
@@ -78,6 +79,7 @@ public class LibraryContext : DbContext
 		modelBuilder.ApplyConfiguration(new CollectionSeed());
         modelBuilder.ApplyConfiguration(new AuthorSeed());
 		modelBuilder.ApplyConfiguration(new PublisherSeed());
+		modelBuilder.ApplyConfiguration(new CoverSeed());
     }
 	
 }

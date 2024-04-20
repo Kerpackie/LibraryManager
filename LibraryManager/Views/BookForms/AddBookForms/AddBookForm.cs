@@ -33,16 +33,14 @@ namespace LibraryManager.Views.BookForms.AddBookForms
         private readonly ICollectionService _collectionService;
         private readonly IAuthorService _authorService;
         private readonly IBookService _bookService;
-        private readonly IDapperBookService _dapperBookService;
 
-        public AddBookForm(ISubjectService subjectService, IPublisherService publisherService, ICollectionService collectionService, IAuthorService authorService, IBookService bookService, IDapperBookService dapperBookService)
+        public AddBookForm(ISubjectService subjectService, IPublisherService publisherService, ICollectionService collectionService, IAuthorService authorService, IBookService bookService)
         {
             _subjectService = subjectService;
             _publisherService = publisherService;
             _collectionService = collectionService;
             _authorService = authorService;
             _bookService = bookService;
-            _dapperBookService = dapperBookService;
 
             InitializeComponent();
 
@@ -110,9 +108,11 @@ namespace LibraryManager.Views.BookForms.AddBookForms
                 comboBoxAuthor.SelectedIndex = 0; // Set the first item as the default selected item
 
                 // Bind the updated value to _book.Author
-                comboBoxAuthor.SelectedValueChanged += (s, e) =>
+                comboBoxAuthor.SelectedValueChanged += async (s, e) =>
                 {
-                    _book.Author = (Author)comboBoxAuthor.SelectedItem;
+                    var auth = await _authorService.GetAuthorByNameAsync(comboBoxAuthor.Text);
+                    _book.Author = auth.Data;
+                    _book.AuthorId = auth.Data.Id;
                 };
             }
             else
@@ -192,8 +192,9 @@ namespace LibraryManager.Views.BookForms.AddBookForms
             _book.Loaned = cbOnLoan.Checked;
             _book.CoverId = 1;
 
-            await _dapperBookService.InsertBookWithSubjectsAndCollectionsAsync(_book, _bookSubjects.ToList(), _bookCollections.ToList());
+            await _bookService.InsertOrIgnoreBookAsync(_book);
             DialogResult = DialogResult.OK;
+            MessageBox.Show("Book added successfully!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
             //Close();
         }
 

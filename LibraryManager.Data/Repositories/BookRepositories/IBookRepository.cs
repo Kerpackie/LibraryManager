@@ -13,12 +13,12 @@ public interface IBookRepository
 	Task<IEnumerable<Book>> GetAllByPublisher(int publisherId);
 	Task<IEnumerable<Book>> GetAllOwned();
 	Task<IEnumerable<Book>> GetAllLoaned();
-	Task Create(Book book);
-	Task Update(Book book);
-	Task Delete(Book book);
-	Task AddNoteToBook(int bookId, int noteId);
-	Task AddBookToLoan(int bookId, int loanId);
-	Task AddSubjectToBook(int bookId, int subjectId);
-	Task AddBookToCollection(int bookId, int collectionId);
+	Task<int> Create(Book book);
+	Task<int> Update(Book book);
+	Task<int> Delete(Book book);
+	Task<int> AddNoteToBook(int bookId, int noteId);
+	Task<int> AddBookToLoan(int bookId, int loanId);
+	Task<int> AddSubjectToBook(int bookId, int subjectId);
+	Task<int> AddBookToCollection(int bookId, int collectionId);
 
 }

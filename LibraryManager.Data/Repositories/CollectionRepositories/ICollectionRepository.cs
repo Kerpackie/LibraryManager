@@ -7,7 +7,8 @@ public interface ICollectionRepository
 	Task<IEnumerable<Collection>> GetAll();
 	Task<Collection> GetById(int id);
 	Task<Collection> GetByName(string name);
-	Task Create(Collection collection);
-	Task Update(Collection collection);
-	Task Delete(int id);
+	Task<int> Create(Collection collection);
+	Task<int> Update(Collection collection);
+	Task<int> Delete(int id);
+	Task<int> Delete(string name);
 }

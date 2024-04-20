@@ -10,6 +10,8 @@ public interface IAuthorRepository
 	Task<int> Create(Author author);
 	Task<int> Update(Author author);
 	Task<int> Delete(int id);
+	Task<int> Delete(Author author);
+	Task<int> Delete(string authorName);
 	Task<IEnumerable<Author>> GetAuthorsByBookId(int bookId);
 	Task<int> AddAuthorToBook(int bookId, int authorId);
 }

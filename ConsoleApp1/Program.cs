@@ -3,6 +3,7 @@ using LibraryManager.Data.Models;
 using LibraryManager.Data.Repositories;
 using LibraryManager.Data.Repositories.AuthorRepositories;
 using LibraryManager.Data.Services;
+using LibraryManager.Data.Services.AuthorService;
 using Microsoft.Extensions.DependencyInjection;
 
 var serviceProvider = new ServiceCollection()

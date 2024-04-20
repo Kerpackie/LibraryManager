@@ -7,7 +7,7 @@ public interface ISubjectRepository
 	Task<IEnumerable<Subject>> GetAll();
 	Task<Subject> GetById(int id);
 	Task<Subject> GetByName(string name);
-	Task Create(Subject subject);
-	Task Update(Subject subject);
-	Task Delete(int id);
+	Task<int> Create(Subject subject);
+	Task<int> Update(Subject subject);
+	Task<int> Delete(int id);
 }

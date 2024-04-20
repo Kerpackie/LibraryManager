@@ -85,7 +85,7 @@ public class BookRepository : IBookRepository
 		return await connection.QueryAsync<Book>(sql);
 	}
 
-	public async Task Create(Book book)
+	public async Task<int> Create(Book book)
 	{
 		using var connection = _createConnection();
 		
@@ -94,10 +94,11 @@ public class BookRepository : IBookRepository
 			VALUES (@Name, @Isbn, @AuthorId, @PublisherId, @Owned, @Loaned)
 		";
 		
-		await connection.ExecuteAsync(sql, book);
+		var affectedRows = await connection.ExecuteAsync(sql, book);
+		return affectedRows;
 	}
 
-	public async Task Update(Book book)
+	public async Task<int> Update(Book book)
 	{
 		using var connection = _createConnection();
 
@@ -108,43 +109,53 @@ public class BookRepository : IBookRepository
 			";
 	
 		
-		await connection.ExecuteAsync(sql, book);
+		var affectedRows = await connection.ExecuteAsync(sql, book);
+		return affectedRows;
 	}
 
-	public async Task Delete(Book book)
+	public async Task<int> Delete(Book book)
 	{
 		using var connection = _createConnection();
 		
 		var sql = "DELETE FROM Books WHERE Id = @Id";
 		
-		await connection.ExecuteAsync(sql, book);
+		var affectedRows = await connection.ExecuteAsync(sql, book);
+		return affectedRows;
 	}
 	
-	public async Task AddNoteToBook(int bookId, int noteId)
+	public async Task<int> AddNoteToBook(int bookId, int noteId)
 	{
 		using var connection = _createConnection();
 		var sql = "INSERT INTO BookNotes (BookId, NoteId) VALUES (@bookId, @noteId)";
-		await connection.ExecuteAsync(sql, new { bookId, noteId });
+		
+		var affectedRows = await connection.ExecuteAsync(sql, new { bookId, noteId });
+		return affectedRows;
 	}
 	
-	public async Task AddBookToLoan(int bookId, int loanId)
+	public async Task<int> AddBookToLoan(int bookId, int loanId)
 	{
 		using var connection = _createConnection();
 		var sql = "UPDATE Books SET LoanId = @loanId WHERE Id = @bookId";
-		await connection.ExecuteAsync(sql, new { bookId, loanId });
+		
+		var affectedRows = await connection.ExecuteAsync(sql, new { bookId, loanId });
+		return affectedRows;
 	}
 	
-	public async Task AddSubjectToBook(int bookId, int subjectId)
+	public async Task<int> AddSubjectToBook(int bookId, int subjectId)
 	{
 		using var connection = _createConnection();
 		var sql = "INSERT INTO BookSubjects (BookId, SubjectId) VALUES (@bookId, @subjectId)";
-		await connection.ExecuteAsync(sql, new { bookId, subjectId });
+		
+		var affectedRows = await connection.ExecuteAsync(sql, new { bookId, subjectId });
+		return affectedRows;
 	}
 	
-	public async Task AddBookToCollection(int bookId, int collectionId)
+	public async Task<int> AddBookToCollection(int bookId, int collectionId)
 	{
 		using var connection = _createConnection();
 		var sql = "INSERT INTO BookCollections (BookId, CollectionId) VALUES (@bookId, @collectionId)";
-		await connection.ExecuteAsync(sql, new { bookId, collectionId });
+		
+		var affectedRows = await connection.ExecuteAsync(sql, new { bookId, collectionId });
+		return affectedRows;
 	}
 }
