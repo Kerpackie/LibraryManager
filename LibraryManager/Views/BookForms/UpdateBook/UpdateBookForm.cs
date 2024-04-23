@@ -1,30 +1,23 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
+﻿using System.ComponentModel;
 using LibraryManager.Core.Models;
 using LibraryManager.Core.Services.AuthorService;
 using LibraryManager.Core.Services.BookService;
 using LibraryManager.Core.Services.CollectionService;
+using LibraryManager.Core.Services.NotesService;
 using LibraryManager.Core.Services.PublisherService;
 using LibraryManager.Core.Services.SubjectService;
-using static System.Int32;
 
-namespace LibraryManager.Views.BookForms.AddBookForms
+namespace LibraryManager.Views.BookForms.UpdateBook
 {
-    public partial class AddBookForm : Form
+    public partial class UpdateBookForm : Form
     {
-        private Book _book = new();
+        private Book _book;
+
         private BindingList<Subject> _subjects = new();
         private BindingList<Subject> _bookSubjects = new();
         private BindingList<Collection> _collections = new();
         private BindingList<Collection> _bookCollections = new();
+        private BindingList<Note> _notes = new();
         private List<Author> _authors = new();
         private List<Publisher> _publishers = new();
 
@@ -33,31 +26,39 @@ namespace LibraryManager.Views.BookForms.AddBookForms
         private readonly ICollectionService _collectionService;
         private readonly IAuthorService _authorService;
         private readonly IBookService _bookService;
+        private readonly INoteService _noteService;
 
-        public AddBookForm(ISubjectService subjectService, IPublisherService publisherService, ICollectionService collectionService, IAuthorService authorService, IBookService bookService)
+        public UpdateBookForm(Book book, ISubjectService subjectService, IPublisherService publisherService, ICollectionService collectionService, IAuthorService authorService, IBookService bookService, INoteService noteService)
         {
+            _book = book;
             _subjectService = subjectService;
             _publisherService = publisherService;
             _collectionService = collectionService;
             _authorService = authorService;
             _bookService = bookService;
-
+            _noteService = noteService;
             InitializeComponent();
 
-            DisableNoteControls();
-
-            Load += AddBookForm_Load;
+            Load += HandleLoad;
+            
+            panelBody.Enabled = false;
         }
 
-        private void DisableNoteControls()
+        private void LoadBookToForm()
         {
-            tbNoteTitle.Enabled = false;
-            btnSaveNote.Enabled = false;
-            btnRemoveNote.Enabled = false;
-            richTextBox1.Enabled = false;
+            tbISBN.Text = _book.Isbn;
+            tbTitle.Text = _book.Title;
+            tbPageCount.Text = _book.PageCount.ToString();
+            tbPagesRead.Text = _book.PagesRead.ToString();
+
+            comboBoxAuthor.Text = _book.Author.Name;
+            comboBoxPublisher.Text = _book.Publisher.Name;
+
+            pictureBox1.SizeMode = PictureBoxSizeMode.StretchImage; // Set the picture box to scale the image
+            pictureBox1.ImageLocation = _book.Cover.Medium; // Set the image to the cover URL
         }
 
-        private async void AddBookForm_Load(object? sender, EventArgs e)
+        private async void HandleLoad(object? sender, EventArgs e)
         {
             // Load all subjects
             var subjects = await _subjectService.GetAllSubjectsAsync();
@@ -124,8 +125,25 @@ namespace LibraryManager.Views.BookForms.AddBookForms
             {
                 MessageBox.Show(authors.Message);
             }
-        }
 
+            // Load all notes
+            var notes = await _noteService.GetNotesForBookAsync(_book.Id);
+            if (notes.Success)
+            {
+                _notes = new BindingList<Note>(notes.Data.ToList());
+                
+            }
+            else
+            {
+                _notes = new BindingList<Note>();
+            }
+            
+            listBoxNotes.DataSource = _notes;
+            listBoxNotes.DisplayMember = "Title";
+
+
+            LoadBookToForm();
+        }
 
         private void btnAddSubjectToBook_Click(object sender, EventArgs e)
         {
@@ -184,22 +202,69 @@ namespace LibraryManager.Views.BookForms.AddBookForms
         {
             var publisher = (Publisher)comboBoxPublisher.SelectedItem;
             var author = (Author)comboBoxAuthor.SelectedItem;
-            
+
             _book.Title = tbTitle.Text;
             _book.Isbn = tbISBN.Text;
             _book.PublisherId = publisher.Id;
             _book.AuthorId = author.Id;
-            _book.PageCount = TryParse(tbPageCount.Text, out var pageCount) ? pageCount : 0;
-            _book.PagesRead = TryParse(tbPagesRead.Text, out var pagesRead) ? pagesRead : 0;
+            _book.PageCount = int.TryParse(tbPageCount.Text, out var pageCount) ? pageCount : 0;
+            _book.PagesRead = int.TryParse(tbPagesRead.Text, out var pagesRead) ? pagesRead : 0;
             _book.Owned = cbOwned.Checked;
             _book.Loaned = cbOnLoan.Checked;
-            _book.CoverId = 1;
 
-            await _bookService.InsertOrIgnoreBookAsync(_book);
-            DialogResult = DialogResult.OK;
-            MessageBox.Show("Book added successfully!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            var result = await _bookService.UpdateBookAsync(_book);
+
+            if (result.Success)
+            {
+                MessageBox.Show("Book updated successfully", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            else
+            {
+                MessageBox.Show(result.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+
             //Close();
         }
 
+        private void btnToggleEdit_Click(object sender, EventArgs e)
+        {
+            panelBody.Enabled = panelBody.Enabled switch
+            {
+                true => false,
+                false => true
+            };
+        }
+
+        private async void btnSaveNote_Click(object sender, EventArgs e)
+        {
+            var note = new Note
+            {
+                Title = tbNoteTitle.Text,
+                Content = richTextBox1.Text,
+                BookId = _book.Id
+            };
+
+            var result = await _noteService.InsertNoteAsync(note);
+
+            if (result.Success)
+            {
+                _notes.Add(note);
+                MessageBox.Show("Note saved successfully", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            else
+            {
+                MessageBox.Show(result.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void btnRemoveNote_Click(object sender, EventArgs e)
+        {
+            var selectedNote = (Note)listBoxNotes.SelectedItem;
+
+            if (selectedNote == null) return;
+            _notes.Remove(selectedNote);
+            
+            _noteService.DeleteNoteAsync(selectedNote.Id);
+        }
     }
 }

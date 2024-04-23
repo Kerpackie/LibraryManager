@@ -1,6 +1,11 @@
 ﻿using LibraryManager.Services.FormService;
 using LibraryManager.Views;
 using LibraryManager.Views.BookForms.AddBookForms;
+using LibraryManager.Views.BookForms.ImportBookForms;
+using LibraryManager.Views.BookForms.RecommendedBook;
+using LibraryManager.Views.BookForms.SearchForms;
+using LibraryManager.Views.BookForms.UpdateAuthorPublisherForms;
+using LibraryManager.Views.BookForms.UpdateBook;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace LibraryManager.Services
@@ -20,6 +25,11 @@ namespace LibraryManager.Services
 			services.AddSingleton<IFormService, FormService.FormService>();
 			services.AddTransient<MainForm>();
 			services.AddTransient<AddBookForm>();
+			services.AddTransient<ImportBookForm>();
+			services.AddTransient<UpdateAuthorPublisher>();  
+			services.AddTransient<SearchForm>();
+			services.AddTransient<UpdateBookForm>();
+			services.AddTransient<RecommendedBookForm>();
 
 			return services;
 		}
