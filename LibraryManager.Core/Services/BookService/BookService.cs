@@ -131,6 +131,7 @@ public class BookService : IBookService
 			.Include(b => b.Publisher)
 			.Include(b => b.Cover)
 			.Include(b => b.Subjects)
+            .Include(b => b.Collections)
 			.FirstOrDefaultAsync(b => b.Isbn == isbn);
 
 		if (book == null)
@@ -160,6 +161,7 @@ public class BookService : IBookService
 			.Include(b => b.Publisher)
 			.Include(b => b.Cover)
 			.Include(b => b.Subjects)
+            .Include(b => b.Collections)
 			.FirstOrDefaultAsync(b => b.Id == id);
 
 		if (book == null)
@@ -189,7 +191,8 @@ public class BookService : IBookService
 			.Include(b => b.Publisher)
 			.Include(b => b.Cover)
 			.Include(b => b.Subjects)
-			.FirstOrDefaultAsync(b => b.Title == title);
+            .Include(b => b.Collections)
+            .FirstOrDefaultAsync(b => b.Title == title);
 
 		if (book == null)
 		{
@@ -218,7 +221,8 @@ public class BookService : IBookService
 			.Include(b => b.Publisher)
 			.Include(b => b.Cover)
 			.Include(b => b.Subjects)
-			.ToListAsync();
+            .Include(b => b.Collections)
+            .ToListAsync();
 
 		var responseSuccess = new ServiceResponse<IEnumerable<Book>>
 		{
@@ -248,7 +252,8 @@ public class BookService : IBookService
 			.Include(b => b.Publisher)
 			.Include(b => b.Cover)
 			.Include(b => b.Subjects)
-			.Where(b => b.Author.Id == author.Data.Id)
+            .Include(b => b.Collections)
+            .Where(b => b.Author.Id == author.Data.Id)
 			.ToListAsync();
 
 		var responseSuccess = new ServiceResponse<IEnumerable<Book>>
@@ -279,7 +284,8 @@ public class BookService : IBookService
 			.Include(b => b.Publisher)
 			.Include(b => b.Cover)
 			.Include(b => b.Subjects)
-			.Where(b => b.Subjects.Any(s => s.Id == subjectData.Data.Id))
+            .Include(b => b.Collections)
+            .Where(b => b.Subjects.Any(s => s.Id == subjectData.Data.Id))
 			.ToListAsync();
 
 		var responseSuccess = new ServiceResponse<IEnumerable<Book>>
@@ -310,7 +316,8 @@ public class BookService : IBookService
 			.Include(b => b.Publisher)
 			.Include(b => b.Cover)
 			.Include(b => b.Subjects)
-			.Where(b => b.Publisher.Id == publisherData.Data.Id)
+            .Include(b => b.Collections)
+            .Where(b => b.Publisher.Id == publisherData.Data.Id)
 			.ToListAsync();
 
 		var responseSuccess = new ServiceResponse<IEnumerable<Book>>
@@ -342,6 +349,10 @@ public class BookService : IBookService
 		existingBook.Publisher = book.Publisher;
 		existingBook.Cover = book.Cover;
 		existingBook.Subjects = book.Subjects;
+		existingBook.PageCount = book.PageCount;
+		existingBook.PagesRead = book.PagesRead;
+		existingBook.Loaned = book.Loaned;
+		existingBook.Collections = book.Collections;
 
 		await _context.SaveChangesAsync();
 

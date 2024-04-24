@@ -73,6 +73,12 @@ namespace LibraryManager.Views.BookForms.UpdateBook
             listBoxBookSubjects.DataSource = _bookSubjects;
             listBoxBookSubjects.DisplayMember = "Name";
 
+            // Remove the book subjects from the list of all subjects
+            foreach (var subject in _bookSubjects)
+            {
+                _subjects.Remove(subject);
+            }
+
             // Load all collections
             var collections = await _collectionService.GetAllCollectionsAsync();
             if (collections.Success)
@@ -84,6 +90,12 @@ namespace LibraryManager.Views.BookForms.UpdateBook
             _bookCollections = new BindingList<Collection>(_book.Collections.ToList());
             listBoxBookCollections.DataSource = _bookCollections;
             listBoxBookCollections.DisplayMember = "Name";
+
+            // Remove the book collection from the list of all collections
+            foreach (var collection in _bookCollections)
+            {
+                _collections.Remove(collection);
+            }
 
             // Load all publishers
 
@@ -178,6 +190,8 @@ namespace LibraryManager.Views.BookForms.UpdateBook
         {
             var selectedCollection = (Collection)listBoxAllCollections.SelectedItem;
 
+            if (selectedCollection is null) return;
+
             if (_book.Collections.Contains(selectedCollection))
             {
                 MessageBox.Show("This collection is already in the book.");
@@ -189,9 +203,12 @@ namespace LibraryManager.Views.BookForms.UpdateBook
             _bookCollections.Add(selectedCollection);
         }
 
-        private void btnRemoveCollectionFromBook_Click(object sender, EventArgs e)
+        private async void btnRemoveCollectionFromBook_Click(object sender, EventArgs e)
         {
             var selectedCollection = (Collection)listBoxBookCollections.SelectedItem;
+
+            if (selectedCollection == null) return;
+
 
             _book.Collections.Remove(selectedCollection);
             _collections.Add(selectedCollection);

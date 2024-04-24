@@ -51,7 +51,9 @@ public class CollectionService : ICollectionService
 
 		try
 		{
-			var collection = await _context.Collections.FindAsync(id);
+			var collection = await _context.Collections
+                .Include(c => c.Books)
+                .FirstOrDefaultAsync(c => c.Id == id);
 
 			if (collection == null)
 			{
@@ -79,7 +81,9 @@ public class CollectionService : ICollectionService
 
 		try
 		{
-			var collection = _context.Collections.FirstOrDefault(c => c.Name == name);
+			var collection = _context.Collections
+                .Include(c => c.Books)
+                .FirstOrDefault(c => c.Name == name);
 
 			if (collection == null)
 			{
@@ -107,9 +111,18 @@ public class CollectionService : ICollectionService
 
 		try
 		{
-			var collections = await _context.Collections.ToListAsync();
+            var collections = await _context.Collections
+                .Include(c => c.Books)
+                .ThenInclude(b => b.Author)
+                .Include(c => c.Books)
+                .ThenInclude(b => b.Publisher)
+                .Include(c => c.Books)
+                .ThenInclude(b => b.Cover)
+                .Include(c => c.Books)
+                .ThenInclude(b => b.Subjects)
+                .ToListAsync();
 
-			if (collections.Count == 0)
+            if (collections.Count == 0)
 			{
 				serviceResponse.Success = false;
 				serviceResponse.Message = "No collections found";
@@ -274,6 +287,51 @@ public class CollectionService : ICollectionService
 
 			serviceResponse.Data = collection;
 			serviceResponse.Message = "Book added to collection successfully";
+		}
+		catch (Exception ex)
+		{
+			serviceResponse.Success = false;
+			serviceResponse.Message = $"An error occurred: {ex.Message}";
+		}
+
+		return serviceResponse;
+	}
+
+	public async Task<ServiceResponse<Collection>> RemoveBookFromCollectionAsync(int collectionId, int bookId)
+	{
+		var serviceResponse = new ServiceResponse<Collection>();
+
+		try
+		{
+			var collection = await _context.Collections.FindAsync(collectionId);
+			var book = await _context.Books.FindAsync(bookId);
+
+			if (collection == null)
+			{
+				serviceResponse.Success = false;
+				serviceResponse.Message = "Collection not found";
+				return serviceResponse;
+			}
+
+			if (book == null)
+			{
+				serviceResponse.Success = false;
+				serviceResponse.Message = "Book not found";
+				return serviceResponse;
+			}
+
+			if (collection.Books.All(b => b.Id != bookId))
+			{
+				serviceResponse.Success = false;
+				serviceResponse.Message = "Book does not exist in the collection";
+				return serviceResponse;
+			}
+
+			collection.Books.Remove(book);
+			await _context.SaveChangesAsync();
+
+			serviceResponse.Data = collection;
+			serviceResponse.Message = "Book removed from collection successfully";
 		}
 		catch (Exception ex)
 		{

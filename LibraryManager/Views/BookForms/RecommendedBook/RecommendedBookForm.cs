@@ -64,7 +64,12 @@ namespace LibraryManager.Views.BookForms.RecommendedBook
 
 
             pictureBox1.SizeMode = PictureBoxSizeMode.StretchImage; // Set the picture box to scale the image
-            pictureBox1.ImageLocation = _book.Cover.Medium; // Set the image to the cover URL
+            pictureBox1.Load(!string.IsNullOrEmpty(_book.Cover.Medium)
+                ? _book.Cover.Medium
+                : "https://twinklelearning.in/uploads/noimage.jpg");
+            {
+                pictureBox1.Load(_book.Cover.Medium);
+            }
         }
     }
 }

@@ -147,7 +147,7 @@ namespace LibraryManager.Views.BookForms.SearchForms
             {
                 var book = await _bookService.GetBookByTitleAsync(listBoxSearchResults.SelectedItem.ToString());
 
-                _formService.OpenChildFormWithArgument<UpdateBookForm, Book>(_parentPanel, book.Data); // Modify this line
+                _formService.OpenChildFormWithArgument<UpdateBookForm, Book>(_parentPanel, book.Data);
 
                 Close();
             }

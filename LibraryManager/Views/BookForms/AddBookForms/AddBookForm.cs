@@ -132,6 +132,8 @@ namespace LibraryManager.Views.BookForms.AddBookForms
             // Get the selected subject from the listBox
             var selectedSubject = (Subject)listBoxAllSubjects.SelectedItem;
 
+            if (selectedSubject is null) return;
+
             // Check if the subject is already in the book
             if (_book.Subjects.Contains(selectedSubject))
             {
@@ -150,6 +152,8 @@ namespace LibraryManager.Views.BookForms.AddBookForms
             // Get the selected subject from the listBox
             var selectedSubject = (Subject)listBoxBookSubjects.SelectedItem;
 
+            if (selectedSubject is null) return;
+
             // Remove the subject from the book
             _book.Subjects.Remove(selectedSubject);
             _subjects.Add(selectedSubject);
@@ -159,6 +163,8 @@ namespace LibraryManager.Views.BookForms.AddBookForms
         private void btnAddCollectionToBook_Click(object sender, EventArgs e)
         {
             var selectedCollection = (Collection)listBoxAllCollections.SelectedItem;
+
+            if (selectedCollection is null) return;
 
             if (_book.Collections.Contains(selectedCollection))
             {
@@ -174,6 +180,8 @@ namespace LibraryManager.Views.BookForms.AddBookForms
         private void btnRemoveCollectionFromBook_Click(object sender, EventArgs e)
         {
             var selectedCollection = (Collection)listBoxBookCollections.SelectedItem;
+
+            if (selectedCollection is null) return;
 
             _book.Collections.Remove(selectedCollection);
             _collections.Add(selectedCollection);

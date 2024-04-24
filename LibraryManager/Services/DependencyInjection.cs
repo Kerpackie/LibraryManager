@@ -4,8 +4,12 @@ using LibraryManager.Views.BookForms.AddBookForms;
 using LibraryManager.Views.BookForms.ImportBookForms;
 using LibraryManager.Views.BookForms.RecommendedBook;
 using LibraryManager.Views.BookForms.SearchForms;
+using LibraryManager.Views.BookForms.Statistics;
 using LibraryManager.Views.BookForms.UpdateAuthorPublisherForms;
 using LibraryManager.Views.BookForms.UpdateBook;
+using LibraryManager.Views.Collections.GenericCollections;
+using LibraryManager.Views.Collections.Wishlist;
+using LibraryManager.Views.LoanTracking;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace LibraryManager.Services
@@ -30,6 +34,10 @@ namespace LibraryManager.Services
 			services.AddTransient<SearchForm>();
 			services.AddTransient<UpdateBookForm>();
 			services.AddTransient<RecommendedBookForm>();
+            services.AddTransient<WishlistForm>();
+			services.AddTransient<GenericCollectionForm>();
+			services.AddTransient<LoanTracking>();
+            services.AddTransient<BookStatisticsForm>();
 
 			return services;
 		}
