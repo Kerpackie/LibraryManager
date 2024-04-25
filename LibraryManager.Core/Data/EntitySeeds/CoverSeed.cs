@@ -9,7 +9,7 @@ internal class CoverSeed : IEntityTypeConfiguration<Cover>
 	public void Configure(EntityTypeBuilder<Cover> builder)
 	{
 		builder.HasData(
-			new Cover { Id = 1, Small = "0", Medium = "0", Large = "0"}
+			new Cover { Id = 1, Small = "https://twinklelearning.in/uploads/noimage.jpg", Medium = "https://twinklelearning.in/uploads/noimage.jpg", Large = "https://twinklelearning.in/uploads/noimage.jpg"}
 		);
 	}
 }

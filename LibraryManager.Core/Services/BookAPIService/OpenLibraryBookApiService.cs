@@ -1,4 +1,5 @@
 ﻿using LibraryManager.Core.Models;
+using LibraryManager.Core.Models.OpenLibraryResponseModels;
 
 namespace LibraryManager.Core.Services.BookAPIService;
 
@@ -33,6 +34,42 @@ public class OpenLibraryBookApiService : IBookApiService
 			Success = false
 		};
 		
+		return responseFail;
+	}
+
+	public async Task<ServiceResponse<T>> GetSuggestedBookAsync<T>(string subject) where T : class
+	{
+		var response = await _openLibraryApiService.GetRecommendedAsync(subject);
+
+		if (response != null && response.Docs != null && response.Docs.Any())
+		{
+			var firstBook = response.Docs.FirstOrDefault();
+			if (firstBook != null)
+			{
+				var isbn = firstBook.ISBN?.FirstOrDefault();
+				if (!string.IsNullOrEmpty(isbn))
+				{
+					var bookResponse = await GetBookFromApiAsync<OpenLibraryResponse>(isbn);
+					var openLibraryResponse = bookResponse.Data;
+					var book = new Book(openLibraryResponse);
+
+					return new ServiceResponse<T>()
+					{
+						Data = book as T,
+						Message = bookResponse.Message,
+						Success = true
+					};
+				}
+			}
+		}
+
+		var responseFail = new ServiceResponse<T>
+		{
+			Data = default,
+			Message = "Book not found",
+			Success = false
+		};
+
 		return responseFail;
 	}
 }

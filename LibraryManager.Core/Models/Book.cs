@@ -46,9 +46,9 @@ namespace LibraryManager.Core.Models
             Author = new Author{ Name = openLibraryResponse.Authors?[0].Name };
             Publisher = new Publisher{ Name = openLibraryResponse.Publishers?[0].Name };
             Cover = new Cover{
-                Small = openLibraryResponse.Cover?.Small, 
-                Medium = openLibraryResponse.Cover?.Medium, 
-                Large = openLibraryResponse.Cover?.Large};
+                Small = openLibraryResponse.Cover?.Small ?? "https://twinklelearning.in/uploads/noimage.jpg", 
+                Medium = openLibraryResponse.Cover?.Medium ?? "https://twinklelearning.in/uploads/noimage.jpg", 
+                Large = openLibraryResponse.Cover?.Large ?? "https://twinklelearning.in/uploads/noimage.jpg"};
 
             Subjects = openLibraryResponse.Subjects?.Select(s => new Subject{ Name = s.Name }).ToList();
 

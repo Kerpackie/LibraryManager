@@ -126,6 +126,7 @@ public class LoanService : ILoanService
 		{
 			var loans = await _context.Loans
 				.Where(l => l.Deleted == false)
+                .Include(b => b.Books)
 				.ToListAsync();
 
 			if (loans.Count == 0)
@@ -200,12 +201,6 @@ public class LoanService : ILoanService
 				return response;
 			}
 
-			if (loan.IsReturned)
-			{
-				response.Success = false;
-				response.Message = "Loan is already returned";
-				return response;
-			}
 
 			foreach (var book in loan.Books)
 			{
