@@ -94,7 +94,7 @@
             btnAddAuthor.Name = "btnAddAuthor";
             btnAddAuthor.Size = new Size(144, 33);
             btnAddAuthor.TabIndex = 6;
-            btnAddAuthor.Text = "Search Author";
+            btnAddAuthor.Text = "Create Author";
             btnAddAuthor.UseVisualStyleBackColor = true;
             btnAddAuthor.Click += btnAddAuthor_Click;
             // 
@@ -104,7 +104,7 @@
             btnAddPublisher.Name = "btnAddPublisher";
             btnAddPublisher.Size = new Size(144, 33);
             btnAddPublisher.TabIndex = 3;
-            btnAddPublisher.Text = "Search Publisher";
+            btnAddPublisher.Text = "Create Publisher";
             btnAddPublisher.UseVisualStyleBackColor = true;
             btnAddPublisher.Click += btnAddPublisher_Click;
             // 
@@ -150,7 +150,7 @@
             btnAddCollection.Name = "btnAddCollection";
             btnAddCollection.Size = new Size(144, 33);
             btnAddCollection.TabIndex = 16;
-            btnAddCollection.Text = "Search Author";
+            btnAddCollection.Text = "Create Collection";
             btnAddCollection.UseVisualStyleBackColor = true;
             btnAddCollection.Click += btnAddCollection_Click;
             // 
@@ -176,7 +176,7 @@
             btnAddSubject.Name = "btnAddSubject";
             btnAddSubject.Size = new Size(144, 33);
             btnAddSubject.TabIndex = 13;
-            btnAddSubject.Text = "Search Author";
+            btnAddSubject.Text = "Create Subject";
             btnAddSubject.UseVisualStyleBackColor = true;
             btnAddSubject.Click += btnAddSubject_Click;
             // 
