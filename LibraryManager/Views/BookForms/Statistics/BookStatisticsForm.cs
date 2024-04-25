@@ -66,7 +66,8 @@ namespace LibraryManager.Views.BookForms.Statistics
                 book.PagesRead = book.PageCount;
             }
 
-            progressBar.Value = ((book.PagesRead / book.PageCount) * 100);
+            double percentageRead = ((double)book.PagesRead / book.PageCount) * 100;
+            progressBar.Value = (int)Math.Round(percentageRead);
         }
     }
 }
