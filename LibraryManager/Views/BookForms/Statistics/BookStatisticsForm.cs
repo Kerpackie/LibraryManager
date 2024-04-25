@@ -55,6 +55,11 @@ namespace LibraryManager.Views.BookForms.Statistics
 
             lblBookTitle.Text = book.Title;
 
+            // Prevent div by 0 error.
+            if (book.PageCount == 0)
+            {
+                book.PageCount = 1;
+            }
             // Set Progress bar to show % of book read
             if (book.PageCount < book.PagesRead)
             {
